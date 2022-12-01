@@ -1,6 +1,6 @@
 linters:
    enable:
-     # Default linters, which we make explicit.
+     # Default 
      - errcheck
      - govet
      - ineffassign
@@ -8,7 +8,7 @@ linters:
      - typecheck
      - unused
 
-     # Optional linters, which we choose to apply additionally.
+     # Optional linters
      - bodyclose
      - bidichk
      - containedctx
