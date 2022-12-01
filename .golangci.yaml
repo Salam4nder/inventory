@@ -1,0 +1,36 @@
+linters:
+   enable:
+     # Default linters, which we make explicit.
+     - errcheck
+     - govet
+     - ineffassign
+     - staticcheck
+     - typecheck
+     - unused
+
+     # Optional linters, which we choose to apply additionally.
+     - bodyclose
+     - bidichk
+     - containedctx
+     - contextcheck
+     - errname
+     - errorlint
+     - gci
+     - gocritic
+     - godot
+     - gofmt
+     - gosec
+     - lll
+     - misspell
+     - noctx
+     - revive
+     - unconvert
+     - unparam
+     - varnamelen
+     - wsl
+
+
+run:
+   go: '1.19'
+   skip-dirs:
+     - tests/mocks
