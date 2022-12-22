@@ -8,10 +8,10 @@ import (
 // Service is an interface of basic CRUD operations.
 type Service interface {
 	Create(model.Item) (*model.Item, error)
-	GetSingleByName(name string) (*model.Item, error)
-	GetSingleByFilter(model.Item) (*model.Item, error)
-	GetAll() ([]model.Item, error)
-	GetFilter(model.Item) ([]model.Item, error)
+	ReadSingleByName(string) (*model.Item, error)
+	ReadSingleByFilter(model.Item) (*model.Item, error)
+	ReadAll() ([]model.Item, error)
+	ReadByFilter(model.Item) ([]model.Item, error)
 	Update() (*model.Item, error)
 	DeleteByName(name string) error
 	DeleteByFilter(model.Item) error
@@ -32,23 +32,23 @@ func (i *Inventory) Create(model.Item) (*model.Item, error) {
 	return &model.Item{}, nil
 }
 
-// GetSingleByName returns a model.Item by its Name.
-func (i *Inventory) GetSingleByName(name string) (*model.Item, error) {
+// ReadSingleByName returns a model.Item by its Name.
+func (i *Inventory) ReadSingleByName(name string) (*model.Item, error) {
 	return &model.Item{}, nil
 }
 
-// GetSingleByFilter returns a model.Item based off of a filter.
-func (i *Inventory) GetSingleByFilter(model.Item) (*model.Item, error) {
+// ReadSingleByFilter returns a model.Item based off of a filter.
+func (i *Inventory) ReadSingleByFilter(model.Item) (*model.Item, error) {
 	return &model.Item{}, nil
 }
 
-// GetAll returns all model.Items.
-func (i *Inventory) GetAll() ([]model.Item, error) {
+// ReadAll returns all model.Items.
+func (i *Inventory) ReadAll() ([]model.Item, error) {
 	return []model.Item{}, nil
 }
 
-// GetFilter returns a model.Item based off of a filter.
-func (i *Inventory) GetFilter(model.Item) ([]model.Item, error) {
+// ReadByFilter returns a model.Item based off of a filter.
+func (i *Inventory) ReadByFilter(model.Item) ([]model.Item, error) {
 	return []model.Item{}, nil
 }
 
