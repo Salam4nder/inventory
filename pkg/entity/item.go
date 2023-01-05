@@ -4,8 +4,8 @@ import "time"
 
 // Item represents a single item in the database.
 type Item struct {
-	Name      string    `bson:"name"`
-	Unit      string    `bson:"unit"`
-	Amount    float64   `bson:"amount"`
-	ExpiresAt time.Time `bson:"expires_at"`
+	Name      string    `json:"name"`
+	Unit      string    `json:"unit"`
+	Amount    float64   `json:"amount"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
