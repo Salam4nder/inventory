@@ -27,42 +27,42 @@ func NewInventory(storage persistence.Storage) *Inventory {
 	return &Inventory{storage: storage}
 }
 
-// Create creates a new model.Item.
+// Create creates a new Item.
 func (i *Inventory) Create(entity.Item) (*entity.Item, error) {
 	return &entity.Item{}, nil
 }
 
-// ReadSingleByName returns a model.Item by its Name.
+// ReadSingleByName returns a Item by its Name.
 func (i *Inventory) ReadSingleByName(name string) (*entity.Item, error) {
 	return &entity.Item{}, nil
 }
 
-// ReadSingleByFilter returns a model.Item based off of a filter.
+// ReadSingleByFilter returns a Item based off of a filter.
 func (i *Inventory) ReadSingleByFilter(entity.Item) (*entity.Item, error) {
 	return &entity.Item{}, nil
 }
 
-// ReadAll returns all model.Items.
+// ReadAll returns all Items.
 func (i *Inventory) ReadAll() ([]entity.Item, error) {
 	return []entity.Item{}, nil
 }
 
-// ReadByFilter returns a model.Item based off of a filter.
+// ReadByFilter returns a Item based off of a filter.
 func (i *Inventory) ReadByFilter(entity.Item) ([]entity.Item, error) {
 	return []entity.Item{}, nil
 }
 
-// Update updates a model.Item.
+// Update updates a Item.
 func (i *Inventory) Update() (*entity.Item, error) {
 	return &entity.Item{}, nil
 }
 
-// DeleteByName deletes a model.Item based off of a name.
+// DeleteByName deletes a Item based off of a name.
 func (i *Inventory) DeleteByName(name string) error {
 	return nil
 }
 
-// DeleteByFilter deletes model.Item(s) based off of a filter.
+// DeleteByFilter deletes Item(s) based off of a filter.
 func (i *Inventory) DeleteByFilter(entity.Item) error {
 	return nil
 }
