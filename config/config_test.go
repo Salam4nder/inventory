@@ -53,7 +53,7 @@ func Test_NewConfig(t *testing.T) {
 				}
 			}()
 
-			cfg, err := NewConfig()
+			cfg, err := New()
 
 			if test.wantErr {
 				assert.Error(t, err)

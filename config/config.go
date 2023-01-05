@@ -26,9 +26,9 @@ type Database struct {
 	Password string `envvar:"PASSWORD"`
 }
 
-// NewConfig parses the environment variables and returns a new Config.
+// New parses the environment variables and returns a new Config.
 // It returns an error if any env variables are unset.
-func NewConfig() (*Config, error) {
+func New() (*Config, error) {
 	var cfg Config
 
 	if err := envvar.Parse(&cfg); err != nil {
