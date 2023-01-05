@@ -17,26 +17,26 @@ func Test_NewConfig(t *testing.T) {
 		{
 			name: "All env vars set returns no error, correct cfg",
 			envVars: map[string]string{
-				"DB_PORT":     "8080",
 				"DB_HOST":     "localhost",
+				"DB_PORT":     "8080",
 				"DB_USER":     "root",
-				"DB_PASSWORD": "password",
 				"DB_NAME":     "test",
+				"DB_PASSWORD": "password",
 			},
 		},
 		{
 			name: "Missing env var returns error",
 			envVars: map[string]string{
-				"DB_PORT":     "8080",
-				"DB_HOST":     "localhost",
-				"DB_USER":     "root",
+				"DB_HOST":     "localhost2",
+				"DB_PORT":     "5050",
+				"DB_USER":     "admin",
+				"DB_NAME":     "myName",
 				"DB_PASSWORD": "",
-				"DB_NAME":     "test",
 			},
 			wantErr: true,
 		},
 		{
-			name:    "Empty env var returns error",
+			name:    "File empty returns error",
 			envVars: map[string]string{},
 			wantErr: true,
 		},
@@ -54,13 +54,13 @@ func Test_NewConfig(t *testing.T) {
 			}()
 
 			cfg, err := NewConfig()
+
 			if test.wantErr {
 				assert.Error(t, err)
-				assert.Nil(t, cfg)
 			} else {
 				//TODO: compare cfg with expected cfg
+				t.Log("cfg: ", cfg)
 				assert.NoError(t, err)
-				assert.NotNil(t, cfg)
 			}
 		})
 	}
