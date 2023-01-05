@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/Salam4nder/inventory/pkg/model"
+	"github.com/Salam4nder/inventory/pkg/entity"
 	"github.com/Salam4nder/inventory/pkg/persistence"
 )
 
 // Service is an interface of basic CRUD operations.
 type Service interface {
-	Create(model.Item) (*model.Item, error)
-	ReadSingleByName(string) (*model.Item, error)
-	ReadSingleByFilter(model.Item) (*model.Item, error)
-	ReadAll() ([]model.Item, error)
-	ReadByFilter(model.Item) ([]model.Item, error)
-	Update() (*model.Item, error)
+	Create(entity.Item) (*entity.Item, error)
+	ReadSingleByName(string) (*entity.Item, error)
+	ReadSingleByFilter(entity.Item) (*entity.Item, error)
+	ReadAll() ([]entity.Item, error)
+	ReadByFilter(entity.Item) ([]entity.Item, error)
+	Update() (*entity.Item, error)
 	DeleteByName(name string) error
-	DeleteByFilter(model.Item) error
+	DeleteByFilter(entity.Item) error
 }
 
 // Inventory is a service that implements the Service interface.
@@ -28,33 +28,33 @@ func NewInventory(storage persistence.Storage) *Inventory {
 }
 
 // Create creates a new model.Item.
-func (i *Inventory) Create(model.Item) (*model.Item, error) {
-	return &model.Item{}, nil
+func (i *Inventory) Create(entity.Item) (*entity.Item, error) {
+	return &entity.Item{}, nil
 }
 
 // ReadSingleByName returns a model.Item by its Name.
-func (i *Inventory) ReadSingleByName(name string) (*model.Item, error) {
-	return &model.Item{}, nil
+func (i *Inventory) ReadSingleByName(name string) (*entity.Item, error) {
+	return &entity.Item{}, nil
 }
 
 // ReadSingleByFilter returns a model.Item based off of a filter.
-func (i *Inventory) ReadSingleByFilter(model.Item) (*model.Item, error) {
-	return &model.Item{}, nil
+func (i *Inventory) ReadSingleByFilter(entity.Item) (*entity.Item, error) {
+	return &entity.Item{}, nil
 }
 
 // ReadAll returns all model.Items.
-func (i *Inventory) ReadAll() ([]model.Item, error) {
-	return []model.Item{}, nil
+func (i *Inventory) ReadAll() ([]entity.Item, error) {
+	return []entity.Item{}, nil
 }
 
 // ReadByFilter returns a model.Item based off of a filter.
-func (i *Inventory) ReadByFilter(model.Item) ([]model.Item, error) {
-	return []model.Item{}, nil
+func (i *Inventory) ReadByFilter(entity.Item) ([]entity.Item, error) {
+	return []entity.Item{}, nil
 }
 
 // Update updates a model.Item.
-func (i *Inventory) Update() (*model.Item, error) {
-	return &model.Item{}, nil
+func (i *Inventory) Update() (*entity.Item, error) {
+	return &entity.Item{}, nil
 }
 
 // DeleteByName deletes a model.Item based off of a name.
@@ -63,6 +63,6 @@ func (i *Inventory) DeleteByName(name string) error {
 }
 
 // DeleteByFilter deletes model.Item(s) based off of a filter.
-func (i *Inventory) DeleteByFilter(model.Item) error {
+func (i *Inventory) DeleteByFilter(entity.Item) error {
 	return nil
 }
