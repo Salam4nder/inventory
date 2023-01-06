@@ -1,9 +1,14 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 // Item represents a single item in the database.
 type Item struct {
+	ID        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
 	Unit      string    `json:"unit"`
 	Amount    float64   `json:"amount"`
