@@ -36,6 +36,13 @@ func New() (*Application, error) {
 	return &appCfg, nil
 }
 
+// Connection returns the database connection string.
+func (dbCfg *Database) Connection() string {
+	return fmt.Sprintf(
+		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
+		dbCfg.Host, dbCfg.Port, dbCfg.User, dbCfg.Name, dbCfg.Password)
+}
+
 func (appCfg *Application) validate() error {
 	if appCfg.DB.Host == "" {
 		return fmt.Errorf("DB_HOST is required")
