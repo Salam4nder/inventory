@@ -6,15 +6,9 @@ import (
 	"github.com/plaid/go-envvar/envvar"
 )
 
-// Config is the main interface for the application configuration.
-type Config interface {
-	New() (*Settings, error)
-}
-
-// Settings is the main configuration structure for the application.
-// It implements the Config interface.
-type Settings struct {
-	Db Database `envvar:"DB_"`
+// Application is the main configuration structure for the application.
+type Application struct {
+	DB Database `envvar:"DB_"`
 }
 
 // Database is the database configuration.
@@ -28,38 +22,38 @@ type Database struct {
 
 // New parses the environment variables and returns a new Config.
 // It returns an error if any env variables are unset.
-func New() (*Settings, error) {
-	var cfg Settings
+func New() (*Application, error) {
+	var appCfg Application
 
-	if err := envvar.Parse(&cfg); err != nil {
+	if err := envvar.Parse(&appCfg); err != nil {
 		return nil, err
 	}
 
-	if err := cfg.validate(); err != nil {
+	if err := appCfg.validate(); err != nil {
 		return nil, err
 	}
 
-	return &cfg, nil
+	return &appCfg, nil
 }
 
-func (cfg *Settings) validate() error {
-	if cfg.Db.Host == "" {
+func (appCfg *Application) validate() error {
+	if appCfg.DB.Host == "" {
 		return fmt.Errorf("DB_HOST is required")
 	}
 
-	if cfg.Db.Port == "" {
+	if appCfg.DB.Port == "" {
 		return fmt.Errorf("DB_PORT is required")
 	}
 
-	if cfg.Db.User == "" {
+	if appCfg.DB.User == "" {
 		return fmt.Errorf("DB_USER is required")
 	}
 
-	if cfg.Db.Name == "" {
+	if appCfg.DB.Name == "" {
 		return fmt.Errorf("DB_NAME is required")
 	}
 
-	if cfg.Db.Password == "" {
+	if appCfg.DB.Password == "" {
 		return fmt.Errorf("DB_PASSWORD is required")
 	}
 
