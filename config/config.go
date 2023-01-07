@@ -6,14 +6,14 @@ import (
 	"github.com/plaid/go-envvar/envvar"
 )
 
-// Configuration is the main interface for the application configuration.
-type Configuration interface {
-	NewConfig() (*Config, error)
+// Config is the main interface for the application configuration.
+type Config interface {
+	New() (*Settings, error)
 }
 
-// Config is the main configuration structure for the application.
-// It implements the Configuration interface.
-type Config struct {
+// Settings is the main configuration structure for the application.
+// It implements the Config interface.
+type Settings struct {
 	Db Database `envvar:"DB_"`
 }
 
@@ -28,8 +28,8 @@ type Database struct {
 
 // New parses the environment variables and returns a new Config.
 // It returns an error if any env variables are unset.
-func New() (*Config, error) {
-	var cfg Config
+func New() (*Settings, error) {
+	var cfg Settings
 
 	if err := envvar.Parse(&cfg); err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func New() (*Config, error) {
 	return &cfg, nil
 }
 
-func (cfg *Config) validate() error {
+func (cfg *Settings) validate() error {
 	if cfg.Db.Host == "" {
 		return fmt.Errorf("DB_HOST is required")
 	}
