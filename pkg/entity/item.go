@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Item represents a single item in the database.
+// Item represents a single item in the inventory.
 type Item struct {
 	ID        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
