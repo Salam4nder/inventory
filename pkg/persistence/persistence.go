@@ -9,7 +9,7 @@ import (
 // Storage is a persistence layer interface.
 type Storage interface{}
 
-// Database is a persistence layer implementing
+// Database is a persistence layer that implements
 // the Storage interface.
 type Database struct {
 	DB     *sql.DB
