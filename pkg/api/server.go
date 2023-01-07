@@ -7,6 +7,6 @@ import (
 
 // Server is the main structure of the API.
 type Server struct {
-	config  *config.Config
+	config  *config.Application
 	service *service.Service
 }
