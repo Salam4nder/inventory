@@ -14,3 +14,10 @@ type Item struct {
 	Amount    float64   `json:"amount"`
 	ExpiresAt time.Time `json:"expires_at"`
 }
+
+type ItemFilter struct {
+	Name      string    `json:"name"`
+	Unit      string    `json:"unit"`
+	Amount    float64   `json:"amount"`
+	ExpiresAt time.Time `json:"expires_at"`
+}
