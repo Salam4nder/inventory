@@ -6,6 +6,13 @@ import (
 	"github.com/Salam4nder/inventory/config"
 )
 
+const (
+	// PostgresDriver is a driver name for PostgreSQL.
+	PostgresDriver = "postgres"
+	// MySQLDriver is a driver name for MySQL.
+	MySQLDriver = "mysql"
+)
+
 // Storage is a persistence layer interface.
 type Storage interface{}
 
@@ -17,9 +24,11 @@ type Database struct {
 }
 
 // New creates a new Database instance from the given
-// config.Database instance.
-func New(dbCfg *config.Database) (*Database, error) {
-	db, err := sql.Open("postgres", dbCfg.Connection())
+// config.Database instance and driver string.
+// Drivers are provided in this package as constants.
+func New(
+	dbCfg *config.Database, driver string) (*Database, error) {
+	db, err := sql.Open(driver, dbCfg.Connection())
 	if err != nil {
 		return nil, err
 	}
