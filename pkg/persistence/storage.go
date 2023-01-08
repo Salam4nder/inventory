@@ -13,12 +13,12 @@ const (
 	MySQLDriver = "mysql"
 )
 
-// Storage is a persistence layer interface.
-type Storage interface{}
+// Repository is a persistence layer interface.
+type Repository interface{}
 
-// Database is a persistence layer that implements
+// Storage is a persistence layer that implements
 // the Storage interface.
-type Database struct {
+type Storage struct {
 	DB     *sql.DB
 	Config config.Database
 }
@@ -27,7 +27,7 @@ type Database struct {
 // config.Database instance and driver string.
 // Drivers are provided in this package as constants.
 func New(
-	dbCfg *config.Database, driver string) (*Database, error) {
+	dbCfg *config.Database, driver string) (*Storage, error) {
 	db, err := sql.Open(driver, dbCfg.Connection())
 	if err != nil {
 		return nil, err
@@ -37,6 +37,6 @@ func New(
 		return nil, err
 	}
 
-	return &Database{DB: db, Config: *dbCfg}, nil
+	return &Storage{DB: db, Config: *dbCfg}, nil
 	//TODO: defer db.Close() in entry point
 }
