@@ -1,4 +1,4 @@
-package service
+package inventory
 
 import (
 	"github.com/Salam4nder/inventory/pkg/entity"
