@@ -15,6 +15,8 @@ type Item struct {
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
+// ItemFilter represents a filter for items.
+// Used to build a query to the database.
 type ItemFilter struct {
 	Name      string    `json:"name"`
 	Unit      string    `json:"unit"`
