@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/Salam4nder/inventory/pkg/entity"
+	"github.com/google/uuid"
 )
 
 const (
@@ -29,24 +30,24 @@ type Context context.Context
 
 // Create creates a new item in the database.
 func (s *Storage) Create(
-	ctx Context, item entity.Item) (entity.Item, error) {
+	ctx Context, item entity.Item) (uuid.UUID, error) {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
-		return entity.Item{}, err
+		return uuid.Nil, err
 	}
 	defer tx.Rollback()
 
 	if err := tx.QueryRowContext(
 		ctx, insertItem, item.Name, item.Unit,
 		item.Amount, item.ExpiresAt).Scan(&item.ID); err != nil {
-		return entity.Item{}, err
+		return uuid.Nil, err
 	}
 
 	if err := tx.Commit(); err != nil {
-		return entity.Item{}, err
+		return uuid.Nil, err
 	}
 
-	return item, nil
+	return item.ID, nil
 }
 
 // Read reads an item from the database based off of an uuid.
