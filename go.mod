@@ -3,6 +3,7 @@ module github.com/Salam4nder/inventory
 go 1.19
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/google/uuid v1.3.0
 	github.com/plaid/go-envvar v1.1.0
 	github.com/stretchr/testify v1.8.1
