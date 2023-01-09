@@ -13,7 +13,7 @@ const (
 	insertItem = `INSERT INTO inventory (
         name, unit, amount, expires_at) 
         VALUES (
-        $1, $2, $3, $4) RETURNING id)`
+        $1, $2, $3, $4) RETURNING id`
 
 	selectItem = `SELECT * FROM inventory WHERE id = $1`
 
