@@ -99,7 +99,7 @@ func Test_Create_Rollback_And_Error_On_Timeout(t *testing.T) {
 	}
 }
 
-func Test_Create_Error_On_Begin_TX(t *testing.T) {
+func Test_Create_Error_On_BeginTX_Returns_Error(t *testing.T) {
 	driver, mock, err := sqlMock.New()
 	if err != nil {
 		t.Fatalf(
@@ -168,6 +168,49 @@ func Test_Create_Rollback_And_Error_On_Bad_Args(t *testing.T) {
 		item.Amount, item.ExpiresAt).WillReturnError(
 		errors.New("bad arg"))
 	mock.ExpectRollback()
+
+	_, err = storage.Create(ctx, item)
+	if err == nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+
+func Test_Create_Commit_Fails_Returns_Error(t *testing.T) {
+	driver, mock, err := sqlMock.New()
+	if err != nil {
+		t.Fatalf(
+			"unexpected error while creating sqlmock: %s",
+			err)
+	}
+	defer driver.Close()
+
+	storage := Storage{
+		DB: driver,
+	}
+
+	item := entity.Item{
+		ID:        uuid.New(),
+		Name:      "test",
+		Unit:      "kg",
+		Amount:    1.1,
+		ExpiresAt: time.Now().Add(5 * time.Minute),
+	}
+
+	ctx, cancel := context.WithTimeout(
+		context.Background(), 5*time.Second)
+	defer cancel()
+
+	mock.ExpectBegin()
+	mock.ExpectQuery("INSERT INTO inventory").WithArgs(
+		item.Name, item.Unit,
+		item.Amount, item.ExpiresAt).WillReturnRows(
+		sqlMock.NewRows([]string{"id"}).AddRow(item.ID))
+	mock.ExpectCommit().WillReturnError(
+		errors.New("commit fails"))
 
 	_, err = storage.Create(ctx, item)
 	if err == nil {
