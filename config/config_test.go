@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_NewConfig(t *testing.T) {
+func Test_New(t *testing.T) {
 	tests := []struct {
 		name    string
 		envVars map[string]string
