@@ -79,7 +79,6 @@ func (s *Storage) ReadBy(
 	rows, err := s.DB.QueryContext(
 		ctx, query, args...)
 	if err != nil {
-		rows.Close()
 		return items, err
 	}
 	defer rows.Close()
@@ -144,7 +143,7 @@ func (s *Storage) Delete(
 
 func filterQueryBuilder(filter entity.ItemFilter) (
 	query string, args []interface{}) {
-	query = "SELECT * from inventory WHERE "
+	query = "SELECT * FROM inventory WHERE "
 
 	if filter.Name != "" {
 		args = append(args, filter.Name)
