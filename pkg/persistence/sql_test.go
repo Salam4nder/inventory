@@ -301,3 +301,47 @@ func Test_Read_Fails_No_Match(t *testing.T) {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }
+
+func Test_ReadBy_Success(t *testing.T) {
+	driver, mock, err := sqlMock.New(
+		sqlMock.QueryMatcherOption(sqlMock.QueryMatcherEqual))
+
+	if err != nil {
+		t.Fatalf(
+			"unexpected error while creating sqlmock: %s",
+			err)
+	}
+	defer driver.Close()
+
+	storage := Storage{
+		DB: driver,
+	}
+
+	item := entity.Item{
+		ID:     uuid.New(),
+		Name:   "test",
+		Unit:   "kg",
+		Amount: 1.1,
+	}
+
+	filter := entity.ItemFilter{
+		Name:   "test",
+		Unit:   "kg",
+		Amount: 1.1,
+	}
+
+	ctx, cancel := context.WithTimeout(
+		context.Background(), 5*time.Second)
+	defer cancel()
+
+	mock.ExpectQuery(
+		"SELECT * FROM inventory WHERE name = $1 AND unit = $2 AND amount = $3").WithArgs(
+		filter.Name, filter.Unit, filter.Amount).WillReturnRows(
+		sqlMock.NewRows([]string{
+			"id", "name", "unit", "amount", "expires_at"}).AddRow(
+			item.ID, item.Name, item.Unit, item.Amount, item.ExpiresAt))
+	_, err = storage.ReadBy(ctx, filter)
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
