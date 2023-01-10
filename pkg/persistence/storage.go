@@ -19,11 +19,14 @@ const (
 
 // Repository is a persistence layer interface.
 type Repository interface {
-	Create(ctx context.Context, item entity.Item) (uuid.UUID, error)
-	Read(ctx context.Context, uuid string) (*entity.Item, error)
+	Create(ctx context.Context, item entity.Item) (
+		uuid.UUID, error)
+	Read(ctx context.Context, uuid string) (
+		*entity.Item, error)
 	ReadBy(ctx context.Context, filter entity.ItemFilter) (
 		[]*entity.Item, error)
-	Update(ctx context.Context, item *entity.Item) error
+	Update(ctx context.Context, item *entity.Item) (
+		*entity.Item, error)
 	Delete(ctx context.Context, uuid string) error
 }
 
