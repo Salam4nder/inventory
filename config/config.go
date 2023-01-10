@@ -8,7 +8,8 @@ import (
 
 // Application is the main configuration structure for the application.
 type Application struct {
-	DB Database `envvar:"DB_"`
+	DB   Database `envvar:"DB_"`
+	HTTP Server   `envvar:"HTTP_"`
 }
 
 // Database is the database configuration.
@@ -18,6 +19,11 @@ type Database struct {
 	User     string `envvar:"USER"`
 	Name     string `envvar:"NAME"`
 	Password string `envvar:"PASSWORD"`
+}
+
+// Server is the HTTP server configuration.
+type Server struct {
+	Port string `envvar:"PORT"`
 }
 
 // New parses the environment variables and returns a new Config.
