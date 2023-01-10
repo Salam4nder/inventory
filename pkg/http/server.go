@@ -24,9 +24,9 @@ func New(cfg config.Server, srvc inventory.Service) *Server {
 // Start starts the server.
 func (s *Server) Start() error {
 	router := gin.Default()
-	router.GET("/health", s.health)
+	// router.GET("/health", s.health)
 	router.GET("/item/:id", s.getItem)
-	router.GET("/items", s.getItems)
+	router.GET("/item", s.getItems)
 	router.POST("/item", s.createItem)
 	router.PUT("/item/:id", s.updateItem)
 	router.DELETE("/item/:id", s.deleteItem)
