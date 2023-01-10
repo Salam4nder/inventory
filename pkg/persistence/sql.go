@@ -25,12 +25,9 @@ const (
 	deleteItem = `DELETE FROM inventory WHERE id = $1`
 )
 
-// Context is an alias for context.Context.
-type Context context.Context
-
 // Create creates a new item in the database.
 func (s *Storage) Create(
-	ctx Context, item entity.Item) (uuid.UUID, error) {
+	ctx context.Context, item entity.Item) (uuid.UUID, error) {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
 		return uuid.Nil, err
@@ -52,7 +49,7 @@ func (s *Storage) Create(
 
 // Read reads an item from the database based off of an uuid.
 func (s *Storage) Read(
-	ctx Context, uuid string) (*entity.Item, error) {
+	ctx context.Context, uuid string) (*entity.Item, error) {
 	item := &entity.Item{}
 
 	if err := s.DB.QueryRowContext(
@@ -68,7 +65,8 @@ func (s *Storage) Read(
 // ReadBy reads items fro the database by the given filter.
 // It returns an error if the filter is empty.
 func (s *Storage) ReadBy(
-	ctx Context, filter entity.ItemFilter) ([]*entity.Item, error) {
+	ctx context.Context, filter entity.ItemFilter) (
+	[]*entity.Item, error) {
 	items := []*entity.Item{}
 
 	query, args := filterQueryBuilder(filter)
@@ -100,7 +98,8 @@ func (s *Storage) ReadBy(
 
 // Update updates an item in the database.
 func (s *Storage) Update(
-	ctx Context, item *entity.Item) (*entity.Item, error) {
+	ctx context.Context, item *entity.Item) (
+	*entity.Item, error) {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
 		return &entity.Item{}, err
@@ -122,7 +121,7 @@ func (s *Storage) Update(
 
 // Delete deletes an item from the database.
 func (s *Storage) Delete(
-	ctx Context, uuid string) error {
+	ctx context.Context, uuid string) error {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
 		return err
