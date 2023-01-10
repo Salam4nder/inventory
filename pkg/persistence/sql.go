@@ -52,14 +52,14 @@ func (s *Storage) Create(
 
 // Read reads an item from the database based off of an uuid.
 func (s *Storage) Read(
-	ctx Context, uuid string) (entity.Item, error) {
-	var item entity.Item
+	ctx Context, uuid string) (*entity.Item, error) {
+	item := &entity.Item{}
 
 	if err := s.DB.QueryRowContext(
 		ctx, selectItem, uuid).Scan(
 		&item.ID, &item.Name, &item.Unit,
 		&item.Amount, &item.ExpiresAt); err != nil {
-		return entity.Item{}, err
+		return &entity.Item{}, err
 	}
 
 	return item, nil
@@ -100,21 +100,21 @@ func (s *Storage) ReadBy(
 
 // Update updates an item in the database.
 func (s *Storage) Update(
-	ctx Context, item entity.Item) (entity.Item, error) {
+	ctx Context, item *entity.Item) (*entity.Item, error) {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
-		return entity.Item{}, err
+		return &entity.Item{}, err
 	}
 	defer tx.Rollback()
 
 	if _, err := tx.ExecContext(
 		ctx, updateItem, item.Name, item.Unit,
 		item.Amount, item.ExpiresAt, item.ID); err != nil {
-		return entity.Item{}, err
+		return &entity.Item{}, err
 	}
 
 	if err := tx.Commit(); err != nil {
-		return entity.Item{}, err
+		return &entity.Item{}, err
 	}
 
 	return item, nil
