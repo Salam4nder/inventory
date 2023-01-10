@@ -1,9 +1,13 @@
 package persistence
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/Salam4nder/inventory/config"
+	"github.com/Salam4nder/inventory/pkg/entity"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -14,7 +18,14 @@ const (
 )
 
 // Repository is a persistence layer interface.
-type Repository interface{}
+type Repository interface {
+	Create(ctx context.Context, item entity.Item) (uuid.UUID, error)
+	Read(ctx context.Context, uuid string) (*entity.Item, error)
+	ReadBy(ctx context.Context, filter entity.ItemFilter) (
+		[]*entity.Item, error)
+	Update(ctx context.Context, item *entity.Item) error
+	Delete(ctx context.Context, uuid string) error
+}
 
 // Storage is a persistence layer that implements
 // the Repository interface.
