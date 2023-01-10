@@ -1,20 +1,25 @@
 package inventory
 
 import (
+	"context"
+
 	"github.com/Salam4nder/inventory/pkg/entity"
 	"github.com/Salam4nder/inventory/pkg/persistence"
+
+	"github.com/google/uuid"
 )
 
 // Service is an interface of basic CRUD operations.
 type Service interface {
-	Create(entity.Item) (*entity.Item, error)
-	ReadSingleByName(string) (*entity.Item, error)
-	ReadSingleByFilter(entity.Item) (*entity.Item, error)
-	ReadAll() ([]entity.Item, error)
-	ReadByFilter(entity.Item) ([]entity.Item, error)
-	Update() (*entity.Item, error)
-	DeleteByName(name string) error
-	DeleteByFilter(entity.Item) error
+	Create(ctx context.Context, item entity.Item) (
+		uuid.UUID, error)
+	Read(ctx context.Context, uuid string) (
+		*entity.Item, error)
+	ReadBy(ctx context.Context, filter entity.ItemFilter) (
+		[]*entity.Item, error)
+	Update(ctx context.Context, item *entity.Item) (
+		*entity.Item, error)
+	Delete(ctx context.Context, uuid string) error
 }
 
 // Inventory is a service that implements the Service interface.
@@ -22,47 +27,59 @@ type Inventory struct {
 	storage persistence.Repository
 }
 
-// NewInventory returns a new Inventory service.
-func NewInventory(storage persistence.Repository) *Inventory {
-	return &Inventory{storage: storage}
+// New returns a new Inventory service.
+func New(r persistence.Repository) *Inventory {
+	return &Inventory{storage: r}
 }
 
-// Create creates a new Item.
-func (i *Inventory) Create(entity.Item) (*entity.Item, error) {
-	return &entity.Item{}, nil
+// Create creates a new Item from an entity.Item structure.
+func (i *Inventory) Create(
+	ctx context.Context, item entity.Item) (uuid.UUID, error) {
+	uuID, err := i.storage.Create(ctx, item)
+	if err != nil {
+		return uuid.Nil, err
+	}
+
+	return uuID, nil
 }
 
-// ReadSingleByName returns a Item by its Name.
-func (i *Inventory) ReadSingleByName(name string) (*entity.Item, error) {
-	return &entity.Item{}, nil
+// Read returns an Item based off of an uuid from storage.
+func (i *Inventory) Read(
+	ctx context.Context, uuid string) (*entity.Item, error) {
+	item, err := i.storage.Read(ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+
+	return item, nil
 }
 
-// ReadSingleByFilter returns a Item based off of a filter.
-func (i *Inventory) ReadSingleByFilter(entity.Item) (*entity.Item, error) {
-	return &entity.Item{}, nil
+// ReadBy returns Items from storage that match the filter.
+func (i *Inventory) ReadBy(
+	ctx context.Context, filter entity.ItemFilter) (
+	[]*entity.Item, error) {
+	items, err := i.storage.ReadBy(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	return items, nil
 }
 
-// ReadAll returns all Items.
-func (i *Inventory) ReadAll() ([]entity.Item, error) {
-	return []entity.Item{}, nil
+// Update updates the given Item and returns it.
+func (i *Inventory) Update(
+	ctx context.Context, item *entity.Item) (
+	*entity.Item, error) {
+	updatedItem, err := i.storage.Update(ctx, item)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedItem, nil
 }
 
-// ReadByFilter returns a Item based off of a filter.
-func (i *Inventory) ReadByFilter(entity.Item) ([]entity.Item, error) {
-	return []entity.Item{}, nil
-}
-
-// Update updates a Item.
-func (i *Inventory) Update() (*entity.Item, error) {
-	return &entity.Item{}, nil
-}
-
-// DeleteByName deletes a Item based off of a name.
-func (i *Inventory) DeleteByName(name string) error {
-	return nil
-}
-
-// DeleteByFilter deletes Item(s) based off of a filter.
-func (i *Inventory) DeleteByFilter(entity.Item) error {
-	return nil
+// Delete deletes an Item based off of an uuid.
+func (i *Inventory) Delete(
+	ctx context.Context, uuid string) error {
+	return i.storage.Delete(ctx, uuid)
 }
