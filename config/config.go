@@ -9,7 +9,7 @@ import (
 // Application is the main configuration structure for the application.
 type Application struct {
 	DB   Database `envvar:"DB_"`
-	HTTP Server   `envvar:"HTTP_"`
+	HTTP Server   `envvar:"SERVER_"`
 }
 
 // Database is the database configuration.
@@ -23,7 +23,8 @@ type Database struct {
 
 // Server is the HTTP server configuration.
 type Server struct {
-	Port string `envvar:"PORT"`
+	Port      string `envvar:"PORT"`
+	JWTSecret string `envvar:"JWT"`
 }
 
 // New parses the environment variables and returns a new Config.
@@ -73,7 +74,11 @@ func (appCfg *Application) validate() error {
 	}
 
 	if appCfg.HTTP.Port == "" {
-		return fmt.Errorf("HTTP_PORT is required")
+		return fmt.Errorf("SERVER_PORT is required")
+	}
+
+	if appCfg.HTTP.JWTSecret == "" {
+		return fmt.Errorf("SERVER_JWT is required")
 	}
 
 	return nil
