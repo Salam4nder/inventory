@@ -3,8 +3,8 @@ package inventory
 import (
 	"context"
 
-	"github.com/Salam4nder/inventory/pkg/entity"
-	"github.com/Salam4nder/inventory/pkg/persistence"
+	"github.com/Salam4nder/inventory/internal/entity"
+	"github.com/Salam4nder/inventory/internal/persistence"
 
 	"github.com/google/uuid"
 )

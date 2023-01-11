@@ -3,7 +3,7 @@ package inventory
 import (
 	"context"
 
-	"github.com/Salam4nder/inventory/pkg/entity"
+	"github.com/Salam4nder/inventory/internal/entity"
 
 	"github.com/google/uuid"
 )

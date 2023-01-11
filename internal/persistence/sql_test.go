@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Salam4nder/inventory/pkg/entity"
+	"github.com/Salam4nder/inventory/internal/entity"
 
 	sqlMock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"
