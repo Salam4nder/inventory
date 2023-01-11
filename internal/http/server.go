@@ -24,12 +24,17 @@ func New(cfg config.Server, srvc inventory.Service) *Server {
 // Start starts the server.
 func (s *Server) Start() error {
 	router := gin.Default()
+
 	// router.GET("/health", s.health)
-	router.GET("/item/:id", s.readItem)
-	router.GET("/item", s.readItems)
-	router.POST("/item", s.createItem)
-	router.PUT("/item/:id", s.updateItem)
-	router.DELETE("/item/:id", s.deleteItem)
+	jwtRout := router.Group("/api").Use(JWTAuth(
+		s.config.JWTSecret))
+	{
+		jwtRout.GET("/item/:id", s.readItem)
+		jwtRout.GET("/item", s.readItems)
+		jwtRout.POST("/item", s.createItem)
+		jwtRout.PUT("/item/:id", s.updateItem)
+		jwtRout.DELETE("/item/:id", s.deleteItem)
+	}
 
 	return router.Run(":" + s.config.Port)
 }
