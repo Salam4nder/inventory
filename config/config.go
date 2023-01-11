@@ -49,6 +49,8 @@ func (dbCfg *Database) Connection() string {
 		dbCfg.Host, dbCfg.Port, dbCfg.User, dbCfg.Name, dbCfg.Password)
 }
 
+// Envvar does this for us. Keeping in case
+// we use a different library.
 func (appCfg *Application) validate() error {
 	if appCfg.DB.Host == "" {
 		return fmt.Errorf("DB_HOST is required")
@@ -68,6 +70,10 @@ func (appCfg *Application) validate() error {
 
 	if appCfg.DB.Password == "" {
 		return fmt.Errorf("DB_PASSWORD is required")
+	}
+
+	if appCfg.HTTP.Port == "" {
+		return fmt.Errorf("HTTP_PORT is required")
 	}
 
 	return nil
