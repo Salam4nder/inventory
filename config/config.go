@@ -48,6 +48,7 @@ func (dbCfg *Database) Connection() string {
 	return fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		dbCfg.Host, dbCfg.Port, dbCfg.User, dbCfg.Name, dbCfg.Password)
+	//todo enable sslmode?
 }
 
 // Envvar does this for us. Keeping in case
