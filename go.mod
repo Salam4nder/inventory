@@ -9,6 +9,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/plaid/go-envvar v1.1.0
 	github.com/stretchr/testify v1.8.1
+	go.uber.org/zap v1.24.0
 )
 
 require (
@@ -26,6 +27,8 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
+	go.uber.org/atomic v1.10.0 // indirect
+	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3 // indirect
 	golang.org/x/net v0.4.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
