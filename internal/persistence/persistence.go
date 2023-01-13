@@ -8,6 +8,8 @@ import (
 	"github.com/Salam4nder/inventory/internal/service/entity"
 
 	"github.com/google/uuid"
+	// --nolint:staticcheck
+	_ "github.com/lib/pq"
 )
 
 const (
@@ -17,7 +19,8 @@ const (
 	MySQLDriver = "mysql"
 )
 
-// Repository is a persistence layer interface.
+// Repository is a persistence layer interface
+// with basic CRUD operations.
 type Repository interface {
 	Create(ctx context.Context, item entity.Item) (
 		uuid.UUID, error)
