@@ -1,16 +1,16 @@
-package inventory
+package service
 
 import (
 	"context"
 
-	"github.com/Salam4nder/inventory/internal/entity"
 	"github.com/Salam4nder/inventory/internal/persistence"
+	"github.com/Salam4nder/inventory/internal/service/entity"
 
 	"github.com/google/uuid"
 )
 
-// Service is an interface of basic CRUD operations.
-type Service interface {
+// Repository is an interface of basic CRUD operations.
+type Repository interface {
 	Create(ctx context.Context, item entity.Item) (
 		uuid.UUID, error)
 	Read(ctx context.Context, uuid string) (
@@ -22,7 +22,7 @@ type Service interface {
 	Delete(ctx context.Context, uuid string) error
 }
 
-// Inventory is a service that implements the Service interface.
+// Inventory is a service that implements the Repository interface.
 type Inventory struct {
 	storage persistence.Repository
 }

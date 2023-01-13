@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/Salam4nder/inventory/config"
-	"github.com/Salam4nder/inventory/internal/entity"
+	"github.com/Salam4nder/inventory/internal/service/entity"
 
 	"github.com/google/uuid"
 )

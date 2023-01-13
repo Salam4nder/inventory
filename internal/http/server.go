@@ -2,7 +2,7 @@ package http
 
 import (
 	"github.com/Salam4nder/inventory/config"
-	"github.com/Salam4nder/inventory/internal/inventory"
+	"github.com/Salam4nder/inventory/internal/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,11 +10,11 @@ import (
 // Server is the main structure of the API.
 type Server struct {
 	config  config.Server
-	service inventory.Service
+	service service.Repository
 }
 
 // New creates a new instance of the API server.
-func New(cfg config.Server, srvc inventory.Service) *Server {
+func New(cfg config.Server, srvc service.Repository) *Server {
 	return &Server{
 		config:  cfg,
 		service: srvc,
