@@ -29,11 +29,11 @@ func (s *Server) Start() error {
 	jwtRout := router.Group("/api").Use(JWTAuth(
 		s.config.JWTSecret))
 	{
-		jwtRout.GET("/item/:id", s.readItem)
+		jwtRout.GET("/item/:uuid", s.readItem)
 		jwtRout.GET("/item", s.readItems)
 		jwtRout.POST("/item", s.createItem)
-		jwtRout.PUT("/item/:id", s.updateItem)
-		jwtRout.DELETE("/item/:id", s.deleteItem)
+		jwtRout.PUT("/item/:uuid", s.updateItem)
+		jwtRout.DELETE("/item/:uuid", s.deleteItem)
 	}
 
 	return router.Run(":" + s.config.Port)
