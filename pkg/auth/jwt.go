@@ -11,9 +11,11 @@ import (
 // NewJWT creates a new JWT token and signs it with the given secret.
 // The signed token is returned as a string.
 func NewJWT(secret string) (string, error) {
-	expiration := time.Now().Add(1 * time.Hour)
-	claims := jwt.StandardClaims{
-		ExpiresAt: expiration.Unix(),
+	expiration := &jwt.NumericDate{
+		Time: time.Now().Add(time.Minute * 40),
+	}
+	claims := jwt.RegisteredClaims{
+		ExpiresAt: expiration,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
