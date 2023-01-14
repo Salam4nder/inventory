@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/Salam4nder/inventory/config"
 	"github.com/Salam4nder/inventory/internal/service"
+	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,13 +12,18 @@ import (
 type Server struct {
 	config  config.Server
 	service service.Repository
+	logger  *zap.Logger
 }
 
 // New creates a new instance of the API server.
-func New(cfg config.Server, srvc service.Repository) *Server {
+func New(
+	cfg config.Server,
+	srvc service.Repository,
+	log *zap.Logger) *Server {
 	return &Server{
 		config:  cfg,
 		service: srvc,
+		logger:  log,
 	}
 }
 
