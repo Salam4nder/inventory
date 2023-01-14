@@ -25,6 +25,7 @@ type Database struct {
 type Server struct {
 	Port      string `envvar:"PORT"`
 	JWTSecret string `envvar:"JWT"`
+	LogFile   string `envvar:"LOG_FILE"`
 }
 
 // New parses the environment variables and returns a new Config.

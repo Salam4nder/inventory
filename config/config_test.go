@@ -17,13 +17,14 @@ func Test_New(t *testing.T) {
 		{
 			name: "All env vars set returns no error, correct cfg",
 			envVars: map[string]string{
-				"DB_HOST":     "localhost",
-				"DB_PORT":     "8080",
-				"DB_USER":     "root",
-				"DB_NAME":     "test",
-				"DB_PASSWORD": "password",
-				"SERVER_PORT": "8080",
-				"SERVER_JWT":  "secret",
+				"DB_HOST":         "localhost",
+				"DB_PORT":         "8080",
+				"DB_USER":         "root",
+				"DB_NAME":         "test",
+				"DB_PASSWORD":     "password",
+				"SERVER_PORT":     "8080",
+				"SERVER_JWT":      "secret",
+				"SERVER_LOG_FILE": "log.txt",
 			},
 		},
 		{
