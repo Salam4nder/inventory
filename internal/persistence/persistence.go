@@ -8,7 +8,7 @@ import (
 	"github.com/Salam4nder/inventory/internal/service/entity"
 
 	"github.com/google/uuid"
-	// --nolint:staticcheck
+	// --nolint:staticcheck.
 	_ "github.com/lib/pq"
 )
 
