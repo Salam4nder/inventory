@@ -62,6 +62,32 @@ func (s *Storage) Read(
 	return item, nil
 }
 
+// ReadAll reads all items from the database.
+func (s *Storage) ReadAll(
+	ctx context.Context) ([]*entity.Item, error) {
+	rows, err := s.DB.QueryContext(ctx, selectAll)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	items := []*entity.Item{}
+
+	for rows.Next() {
+		item := &entity.Item{}
+
+		if err := rows.Scan(
+			&item.ID, &item.Name, &item.Unit,
+			&item.Amount, &item.ExpiresAt); err != nil {
+			return nil, err
+		}
+
+		items = append(items, item)
+	}
+
+	return items, nil
+}
+
 // ReadBy reads items fro the database by the given filter.
 // It returns an error if the filter is empty.
 func (s *Storage) ReadBy(
