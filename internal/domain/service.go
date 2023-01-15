@@ -15,6 +15,7 @@ type Repository interface {
 		uuid.UUID, error)
 	Read(ctx context.Context, uuid string) (
 		*entity.Item, error)
+	ReadAll(ctx context.Context) ([]entity.Item, error)
 	ReadBy(ctx context.Context, filter entity.ItemFilter) (
 		[]*entity.Item, error)
 	Update(ctx context.Context, item *entity.Item) (

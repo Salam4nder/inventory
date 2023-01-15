@@ -30,6 +30,16 @@ func (i *Inventory) Read(
 	return item, nil
 }
 
+func (i *Inventory) ReadAll(
+	ctx context.Context) ([]entity.Item, error) {
+	items, err := i.storage.ReadAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return items, nil
+}
+
 // ReadBy returns Items from storage that match the filter.
 func (i *Inventory) ReadBy(
 	ctx context.Context, filter entity.ItemFilter) (

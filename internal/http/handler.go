@@ -32,7 +32,18 @@ func (s *Server) readItem(c *gin.Context) {
 }
 
 func (s *Server) readItems(c *gin.Context) {
-	//TODO: implement
+	ctx, cancel := context.WithTimeout(
+		context.Background(), 5*time.Second)
+	defer cancel()
+
+	items, err := s.service.ReadAll(ctx)
+	if err != nil {
+		s.logger.Error(err.Error(), zap.Error(err))
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, items)
 }
 
 func (s *Server) createItem(c *gin.Context) {
