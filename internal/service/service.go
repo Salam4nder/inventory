@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
+	"github.com/Salam4nder/inventory/internal/entity"
 	"github.com/Salam4nder/inventory/internal/persistence"
-	"github.com/Salam4nder/inventory/internal/service/entity"
 
 	"github.com/google/uuid"
 )

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Salam4nder/inventory/internal/service/entity"
+	"github.com/Salam4nder/inventory/internal/entity"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
