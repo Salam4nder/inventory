@@ -25,6 +25,8 @@ func Test_New(t *testing.T) {
 				"SERVER_PORT":     "8080",
 				"SERVER_JWT":      "secret",
 				"SERVER_LOG_FILE": "log.txt",
+				"CACHE_HOST":      "localhost",
+				"CACHE_PORT":      "8080",
 			},
 		},
 		{
