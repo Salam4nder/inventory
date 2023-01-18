@@ -23,12 +23,19 @@ type Redis struct {
 }
 
 // New returns a new instance of Redis.
-func New(cfg config.Cache) *Redis {
-	return &Redis{
+func New(cfg config.Cache) (*Redis, error) {
+	redis := &Redis{
 		Client: redis.NewClient(&redis.Options{
 			Addr: cfg.Host,
 		}),
 	}
+
+	if err := redis.Client.Ping(
+		context.Background()).Err(); err != nil {
+		return nil, err
+	}
+
+	return redis, nil
 }
 
 // Get returns the value of the key.
