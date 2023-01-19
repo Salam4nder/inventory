@@ -3,22 +3,22 @@ package http
 import (
 	"github.com/Salam4nder/inventory/config"
 	"github.com/Salam4nder/inventory/internal/domain"
+	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 // Server is the main structure of the API.
 type Server struct {
 	config  config.Server
-	service domain.Service
+	service domain.Repository
 	logger  *zap.Logger
 }
 
 // New creates a new instance of the API server.
 func New(
 	cfg config.Server,
-	srvc domain.Service,
+	srvc domain.Repository,
 	log *zap.Logger) *Server {
 	return &Server{
 		config:  cfg,
