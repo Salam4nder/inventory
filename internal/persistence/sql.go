@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/Salam4nder/inventory/internal/entity"
+
 	"github.com/google/uuid"
 )
 
