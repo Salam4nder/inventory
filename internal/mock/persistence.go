@@ -8,30 +8,36 @@ import (
 	"github.com/google/uuid"
 )
 
-// Inventory is a mock implementation of domain.Inventory.
-type Inventory struct {
+// Persistence is a mock implementation of domain.Persistence.
+type Persistence struct {
 	storage []entity.Item
+	fails   bool
 }
 
-// NewInventory is a constructor for mock.Inventory.
-func NewInventory() *Inventory {
-	return &Inventory{
+// NewPersistence is a constructor for mock.Persistence.
+func NewPersistence() *Persistence {
+	return &Persistence{
 		storage: make([]entity.Item, 0),
 	}
 }
 
 // Create is a mock implementation of domain.Inventory.Create.
-func (i *Inventory) Create(
+func (i *Persistence) Create(
 	ctx context.Context, item entity.Item,
 ) (uuid.UUID, error) {
+	if i.fails {
+		return uuid.Nil, errors.New("failed")
+	}
 	i.storage = append(i.storage, item)
 	return item.ID, nil
 }
 
 // Read is a mock implementation of domain.Inventory.Read.
-func (i *Inventory) Read(ctx context.Context, uuid string) (
-	*entity.Item, error,
-) {
+func (i *Persistence) Read(ctx context.Context, uuid string) (
+	*entity.Item, error) {
+	if i.fails {
+		return nil, errors.New("failed")
+	}
 	for _, item := range i.storage {
 		if item.ID.String() == uuid {
 			return &item, nil
@@ -42,13 +48,14 @@ func (i *Inventory) Read(ctx context.Context, uuid string) (
 }
 
 // ReadAll is a mock implementation of domain.Inventory.ReadAll.
-func (i *Inventory) ReadAll(ctx context.Context) (
+func (i *Persistence) ReadAll(ctx context.Context) (
 	[]entity.Item, error) {
 	return i.storage, nil
 }
 
 // ReadBy is a mock implementation of domain.Inventory.Readby.
-func (i *Inventory) ReadBy(ctx context.Context, filter entity.ItemFilter) (
+func (i *Persistence) ReadBy(ctx context.Context,
+	filter entity.ItemFilter) (
 	[]*entity.Item, error) {
 	var result []*entity.Item
 
@@ -75,19 +82,19 @@ func (i *Inventory) ReadBy(ctx context.Context, filter entity.ItemFilter) (
 }
 
 // Update is a mock implementation of domain.Inventory.Update.
-func (i *Inventory) Update(ctx context.Context, item *entity.Item) error {
+func (i *Persistence) Update(ctx context.Context, item *entity.Item) (*entity.Item, error) {
 	for idx, val := range i.storage {
 		if val.ID == item.ID {
 			i.storage[idx] = *item
-			return nil
+			return item, nil
 		}
 	}
 
-	return errors.New("not found")
+	return nil, errors.New("not found")
 }
 
 // Delete is a mock implementation of domain.Inventory.Delete.
-func (i *Inventory) Delete(ctx context.Context, uuid string) error {
+func (i *Persistence) Delete(ctx context.Context, uuid string) error {
 	for idx, item := range i.storage {
 		if item.ID.String() == uuid {
 			i.storage = append(i.storage[:idx], i.storage[idx+1:]...)
