@@ -9,8 +9,8 @@ import (
 	"github.com/google/uuid"
 )
 
-// Repository is an interface of basic CRUD operations.
-type Repository interface {
+// Service is an interface of basic CRUD operations.
+type Service interface {
 	Create(ctx context.Context, item entity.Item) (
 		uuid.UUID, error)
 	Read(ctx context.Context, uuid string) (
