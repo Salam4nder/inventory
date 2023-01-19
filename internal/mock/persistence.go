@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Persistence is a mock implementation of domain.Persistence.
+// Persistence is a mock implementation of persistence.Repository.
 type Persistence struct {
 	storage []entity.Item
 	fails   bool
