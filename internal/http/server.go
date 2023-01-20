@@ -38,6 +38,7 @@ func (s *Server) Start() error {
 		jwtRout.GET("/item/:uuid", s.readItem)
 		jwtRout.GET("/item", s.readItems)
 		jwtRout.POST("/item", s.createItem)
+		jwtRout.POST("/item/filter", s.readItemsBy)
 		jwtRout.PUT("/item/:uuid", s.updateItem)
 		jwtRout.DELETE("/item/:uuid", s.deleteItem)
 	}
