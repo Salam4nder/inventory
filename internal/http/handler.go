@@ -47,6 +47,29 @@ func (s *Server) readItems(c *gin.Context) {
 	c.JSON(http.StatusOK, items)
 }
 
+func (s *Server) readItemsBy(c *gin.Context) {
+	filter := entity.ItemFilter{}
+
+	if err := c.ShouldBindJSON(&filter); err != nil {
+		s.logger.Error(err.Error(), zap.Error(err))
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(
+		context.Background(), 5*time.Second)
+	defer cancel()
+
+	items, err := s.service.ReadBy(ctx, filter)
+	if err != nil {
+		s.logger.Error(err.Error(), zap.Error(err))
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, items)
+}
+
 func (s *Server) createItem(c *gin.Context) {
 	var item entity.Item
 
