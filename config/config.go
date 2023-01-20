@@ -45,10 +45,6 @@ func New() (*Application, error) {
 		return nil, err
 	}
 
-	if err := appCfg.validate(); err != nil {
-		return nil, err
-	}
-
 	return &appCfg, nil
 }
 
@@ -58,38 +54,4 @@ func (dbCfg *Database) Connection() string {
 		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		dbCfg.Host, dbCfg.Port, dbCfg.User, dbCfg.Name, dbCfg.Password)
 	// todo enable sslmode?
-}
-
-// Envvar does this for us. Keeping in case
-// we use a different library.
-func (appCfg *Application) validate() error {
-	if appCfg.DB.Host == "" {
-		return fmt.Errorf("DB_HOST is required")
-	}
-
-	if appCfg.DB.Port == "" {
-		return fmt.Errorf("DB_PORT is required")
-	}
-
-	if appCfg.DB.User == "" {
-		return fmt.Errorf("DB_USER is required")
-	}
-
-	if appCfg.DB.Name == "" {
-		return fmt.Errorf("DB_NAME is required")
-	}
-
-	if appCfg.DB.Password == "" {
-		return fmt.Errorf("DB_PASSWORD is required")
-	}
-
-	if appCfg.HTTP.Port == "" {
-		return fmt.Errorf("SERVER_PORT is required")
-	}
-
-	if appCfg.HTTP.JWTSecret == "" {
-		return fmt.Errorf("SERVER_JWT is required")
-	}
-
-	return nil
 }
