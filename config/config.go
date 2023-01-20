@@ -10,7 +10,7 @@ import (
 type Application struct {
 	DB    Database `envvar:"DB_"`
 	HTTP  Server   `envvar:"SERVER_"`
-	Cache Cache    `envvar:"CACHE_"`
+	Cache Cache    `envvar:"REDIS_"`
 }
 
 // Database is the database configuration.
@@ -31,8 +31,9 @@ type Server struct {
 
 // Cache is the cache configuration.
 type Cache struct {
-	Host string `envvar:"HOST"`
-	Port string `envvar:"PORT"`
+	Host     string `envvar:"HOST"`
+	Port     string `envvar:"PORT"`
+	Password string `envvar:"PASSWORD"`
 }
 
 // New parses the environment variables and returns a new Config.
