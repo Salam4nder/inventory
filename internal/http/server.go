@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/Salam4nder/inventory/config"
+	"github.com/Salam4nder/inventory/internal/cache"
 	"github.com/Salam4nder/inventory/internal/domain"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,7 @@ import (
 type Server struct {
 	config  config.Server
 	service domain.Service
+	cache   cache.Provider
 	logger  *zap.Logger
 }
 
@@ -35,10 +37,10 @@ func (s *Server) Start() error {
 	jwtRout := router.Group("/api").Use(JWTAuth(
 		s.config.JWTSecret))
 	{
-		jwtRout.GET("/item/:uuid", s.readItem)
 		jwtRout.GET("/item", s.readItems)
+		jwtRout.GET("/item/:uuid", s.readItem)
+		jwtRout.GET("/item/filter", s.readItemsBy)
 		jwtRout.POST("/item", s.createItem)
-		jwtRout.POST("/item/filter", s.readItemsBy)
 		jwtRout.PUT("/item/:uuid", s.updateItem)
 		jwtRout.DELETE("/item/:uuid", s.deleteItem)
 	}
