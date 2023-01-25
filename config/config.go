@@ -48,10 +48,11 @@ func New() (*Application, error) {
 	return &appCfg, nil
 }
 
-// Connection returns the database connection string.
-func (dbCfg *Database) Connection() string {
+// PSQLConn returns a psql connection string.
+func (dbCfg *Database) PSQLConn() string {
+	// return a psql connection string
 	return fmt.Sprintf(
-		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		dbCfg.Host, dbCfg.Port, dbCfg.User, dbCfg.Name, dbCfg.Password)
-	// todo enable sslmode?
+		"postgresql://%s:%s@%s:%s/%s?sslmode=disable",
+		dbCfg.User, dbCfg.Password, dbCfg.Host,
+		dbCfg.Port, dbCfg.Name)
 }
