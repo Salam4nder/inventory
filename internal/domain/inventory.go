@@ -30,8 +30,9 @@ func (i *Inventory) Read(
 	return item, nil
 }
 
+// ReadAll returns all Items from storage.
 func (i *Inventory) ReadAll(
-	ctx context.Context) ([]entity.Item, error) {
+	ctx context.Context) ([]*entity.Item, error) {
 	items, err := i.storage.ReadAll(ctx)
 	if err != nil {
 		return nil, err
