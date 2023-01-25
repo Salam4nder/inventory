@@ -24,6 +24,7 @@ type Database struct {
 
 // Server is the HTTP server configuration.
 type Server struct {
+	Host      string `envvar:"HOST"`
 	Port      string `envvar:"PORT"`
 	JWTSecret string `envvar:"JWT"`
 	LogFile   string `envvar:"LOG_FILE"`
@@ -55,4 +56,8 @@ func (dbCfg *Database) PSQLConn() string {
 		"postgresql://%s:%s@%s:%s/%s?sslmode=disable",
 		dbCfg.User, dbCfg.Password, dbCfg.Host,
 		dbCfg.Port, dbCfg.Name)
+}
+
+func (srvCfg *Server) Addr() string {
+	return fmt.Sprintf("%s:%s", srvCfg.Host, srvCfg.Port)
 }
