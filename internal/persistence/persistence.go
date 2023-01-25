@@ -26,7 +26,7 @@ type Repository interface {
 		uuid.UUID, error)
 	Read(ctx context.Context, uuid string) (
 		*entity.Item, error)
-	ReadAll(ctx context.Context) ([]entity.Item, error)
+	ReadAll(ctx context.Context) ([]*entity.Item, error)
 	ReadBy(ctx context.Context, filter entity.ItemFilter) (
 		[]*entity.Item, error)
 	Update(ctx context.Context, item *entity.Item) (
@@ -46,7 +46,7 @@ type Storage struct {
 // Drivers are provided in this package as constants.
 func New(
 	dbCfg *config.Database, driver string) (*Storage, error) {
-	db, err := sql.Open(driver, dbCfg.Connection())
+	db, err := sql.Open(driver, dbCfg.PSQLConn())
 	if err != nil {
 		return nil, err
 	}
@@ -56,5 +56,4 @@ func New(
 	}
 
 	return &Storage{DB: db, Config: *dbCfg}, nil
-	//TODO: defer db.Close() in entry point
 }
