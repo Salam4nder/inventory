@@ -13,7 +13,8 @@ import (
 type Provider interface {
 	Delete(key string) int64
 	Set(
-		key string, value interface{}, expiryTime time.Duration) error
+		key string, value interface{},
+		expiryTime time.Duration) error
 	Get(Key string) string
 }
 
