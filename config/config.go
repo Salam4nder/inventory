@@ -58,6 +58,7 @@ func (dbCfg *Database) PSQLConn() string {
 		dbCfg.Port, dbCfg.Name)
 }
 
+// Addr returns the configured server address.
 func (srvCfg *Server) Addr() string {
 	return fmt.Sprintf("%s:%s", srvCfg.Host, srvCfg.Port)
 }
