@@ -9,15 +9,15 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-// Cache is an abstract interface for a cache.
-type Cache interface {
+// Provider is an abstract interface for a cache provider.
+type Provider interface {
 	Delete(key string) int64
 	Set(
 		key string, value interface{}, expiryTime time.Duration) error
 	Get(Key string) string
 }
 
-// Redis is an implementation of Cache interface.
+// Redis is an implementation of Provider interface.
 type Redis struct {
 	Client *redis.Client
 }
