@@ -8,7 +8,7 @@ import (
 
 // Application is the main configuration structure for the application.
 type Application struct {
-	DB    Database `envvar:"DB_"`
+	DB    Database `envvar:"POSTGRES_"`
 	HTTP  Server   `envvar:"SERVER_"`
 	Cache Cache    `envvar:"REDIS_"`
 }
