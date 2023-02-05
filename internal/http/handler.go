@@ -18,11 +18,11 @@ func (s *Server) readItem(c *gin.Context) {
 		return
 	}
 
-	if cachedItem := s.cache.Get(
-		uuid); cachedItem != "redis: nil" {
-		c.JSON(http.StatusOK, cachedItem)
-		return
-	}
+	// if cachedItem := s.cache.Get(
+	// 	uuid); cachedItem != "redis: nil" {
+	// 	c.JSON(http.StatusOK, cachedItem)
+	// 	return
+	// }
 
 	ctx, cancel := context.WithTimeout(
 		context.Background(), 5*time.Second)
@@ -85,10 +85,10 @@ func (s *Server) createItem(c *gin.Context) {
 		return
 	}
 
-	if err := s.cache.Set(
-		item.ID.String(), item, 1*time.Hour); err != nil {
-		s.logger.Error(err.Error(), zap.Error(err))
-	}
+	// if err := s.cache.Set(
+	// 	item.ID.String(), item, 1*time.Hour); err != nil {
+	// 	s.logger.Error(err.Error(), zap.Error(err))
+	// }
 
 	ctx, cancel := context.WithTimeout(
 		context.Background(), 5*time.Second)
@@ -114,7 +114,7 @@ func (s *Server) updateItem(c *gin.Context) {
 		return
 	}
 
-	s.cache.Delete(item.ID.String())
+	// s.cache.Delete(item.ID.String())
 
 	ctx, cancel := context.WithTimeout(
 		context.Background(), 5*time.Second)
