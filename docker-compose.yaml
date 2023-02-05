@@ -5,13 +5,13 @@ services:
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
-      POSTGRES_USER: kamush 
+      POSTGRES_USER: user 
       POSTGRES_DB: inventory
       POSTGRES_PASSWORD: 123456
     ports: 
       - 5432:5432
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U kamush -d inventory"]
+      test: ["CMD-SHELL", "pg_isready -U user -d inventory"]
       interval: 5s
       timeout: 10s
       retries: 5
