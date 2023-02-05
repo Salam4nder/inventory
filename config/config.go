@@ -18,7 +18,7 @@ type Database struct {
 	Host     string `envvar:"HOST"`
 	Port     string `envvar:"PORT"`
 	User     string `envvar:"USER"`
-	Name     string `envvar:"NAME"`
+	Name     string `envvar:"DB"`
 	Password string `envvar:"PASSWORD"`
 }
 
