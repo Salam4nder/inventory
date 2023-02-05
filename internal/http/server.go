@@ -30,6 +30,7 @@ func New(
 	srv := &http.Server{
 		Addr: cfg.Addr(),
 	}
+
 	return &Server{
 		http:    srv,
 		config:  cfg,
