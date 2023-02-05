@@ -1,17 +1,22 @@
-FROM golang:1.19.0-alpine3.13 AS modules
-COPY go.mod go.sum /modules/
-WORKDIR /modules
-RUN go mod download
+FROM golang:latest as builder
 
-FROM golang:1.19.0-alpine3.13 AS builder
-COPY --from=modules /go/pkg /go/pkg
-COPY . /app
 WORKDIR /app
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -tags migrate -o /bin/app ./cmd/app
 
-from scratch
-COPY --from=builder /bin/app /app
-COPY --from=builder /app/config /config
-COPY --from=builder /app/migration /migration
-CMD ["/app"]
+COPY . .
+COPY db/migrations /app/db/migrations
+
+RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -o main ./cmd/app/
+
+FROM scratch
+
+WORKDIR /app
+
+COPY --from=builder /app/main .
+COPY --from=builder /app/db/migrations /app/db/migrations
+# COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+EXPOSE 8080
+
+CMD ["./main"]
