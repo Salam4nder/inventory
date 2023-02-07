@@ -17,7 +17,7 @@ func JWTAuth(secret string) gin.HandlerFunc {
 			return
 		}
 
-		if err := auth.ValidateJWT(secret, token); err != nil {
+		if err := auth.ValidateJWT(token, secret); err != nil {
 			c.JSON(401, gin.H{"error": "JWT token is invalid"})
 			c.Abort()
 			return
