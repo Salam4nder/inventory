@@ -5,8 +5,6 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/Salam4nder/inventory/internal/entity"
-
 	"github.com/google/uuid"
 )
 
@@ -28,7 +26,7 @@ const (
 
 // Create creates a new item in the database.
 func (s *Storage) Create(
-	ctx context.Context, item entity.Item) (uuid.UUID, error) {
+	ctx context.Context, item Item) (uuid.UUID, error) {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
 		return uuid.Nil, err
@@ -50,14 +48,14 @@ func (s *Storage) Create(
 
 // Read reads an item from the database based off of an uuid.
 func (s *Storage) Read(
-	ctx context.Context, uuid string) (*entity.Item, error) {
-	item := &entity.Item{}
+	ctx context.Context, uuid string) (*Item, error) {
+	item := &Item{}
 
 	if err := s.DB.QueryRowContext(
 		ctx, selectItem, uuid).Scan(
 		&item.ID, &item.Name, &item.Unit,
 		&item.Amount, &item.ExpiresAt); err != nil {
-		return &entity.Item{}, err
+		return &Item{}, err
 	}
 
 	return item, nil
@@ -65,17 +63,17 @@ func (s *Storage) Read(
 
 // ReadAll reads all items from the database.
 func (s *Storage) ReadAll(
-	ctx context.Context) ([]*entity.Item, error) {
+	ctx context.Context) ([]*Item, error) {
 	rows, err := s.DB.QueryContext(ctx, selectAll)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	items := []*entity.Item{}
+	items := []*Item{}
 
 	for rows.Next() {
-		item := &entity.Item{}
+		item := &Item{}
 
 		if err := rows.Scan(
 			&item.ID, &item.Name, &item.Unit,
@@ -92,9 +90,9 @@ func (s *Storage) ReadAll(
 // ReadBy reads items fro the database by the given filter.
 // It returns an error if the filter is empty.
 func (s *Storage) ReadBy(
-	ctx context.Context, filter entity.ItemFilter) (
-	[]*entity.Item, error) {
-	items := []*entity.Item{}
+	ctx context.Context, filter ItemFilter) (
+	[]*Item, error) {
+	items := []*Item{}
 
 	query, args := filterQueryBuilder(filter)
 	if len(args) == 0 {
@@ -109,11 +107,11 @@ func (s *Storage) ReadBy(
 	defer rows.Close()
 
 	for rows.Next() {
-		item := entity.Item{}
+		item := Item{}
 		if err := rows.Scan(
 			&item.ID, &item.Name, &item.Unit,
 			&item.Amount, &item.ExpiresAt); err != nil {
-			return []*entity.Item{}, err
+			return []*Item{}, err
 		}
 		items = append(items, &item)
 	}
@@ -125,22 +123,22 @@ func (s *Storage) ReadBy(
 
 // Update updates an item in the database.
 func (s *Storage) Update(
-	ctx context.Context, item *entity.Item) (
-	*entity.Item, error) {
+	ctx context.Context, item *Item) (
+	*Item, error) {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
-		return &entity.Item{}, err
+		return &Item{}, err
 	}
 	defer tx.Rollback()
 
 	if _, err := tx.ExecContext(
 		ctx, updateItem, item.Name, item.Unit,
 		item.Amount, item.ExpiresAt, item.ID); err != nil {
-		return &entity.Item{}, err
+		return &Item{}, err
 	}
 
 	if err := tx.Commit(); err != nil {
-		return &entity.Item{}, err
+		return &Item{}, err
 	}
 
 	return item, nil
@@ -167,7 +165,7 @@ func (s *Storage) Delete(
 	return nil
 }
 
-func filterQueryBuilder(filter entity.ItemFilter) (
+func filterQueryBuilder(filter ItemFilter) (
 	query string, args []interface{}) {
 	query = "SELECT * FROM inventory WHERE "
 

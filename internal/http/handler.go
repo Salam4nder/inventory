@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Salam4nder/inventory/internal/entity"
+	"github.com/Salam4nder/inventory/internal/persistence"
 	"github.com/Salam4nder/inventory/pkg/auth"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +19,7 @@ func (s *Server) readItem(c *gin.Context) {
 		return
 	}
 
+	// TODO move caching to middleware
 	// if cachedItem := s.cache.Get(
 	// 	uuid); cachedItem != "redis: nil" {
 	// 	c.JSON(http.StatusOK, cachedItem)
@@ -55,7 +56,7 @@ func (s *Server) readItems(c *gin.Context) {
 }
 
 func (s *Server) readItemsBy(c *gin.Context) {
-	filter := entity.ItemFilter{}
+	var filter persistence.ItemFilter
 
 	if err := c.ShouldBindJSON(&filter); err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
@@ -78,9 +79,9 @@ func (s *Server) readItemsBy(c *gin.Context) {
 }
 
 func (s *Server) createItem(c *gin.Context) {
-	var item entity.Item
+	var createRequest CreateItemRequest
 
-	if err := c.ShouldBindJSON(&item); err != nil {
+	if err := c.ShouldBindJSON(&createRequest); err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, err)
 		return
@@ -95,6 +96,8 @@ func (s *Server) createItem(c *gin.Context) {
 		context.Background(), 5*time.Second)
 	defer cancel()
 
+	item := createRequest.ToPersistenceItem()
+
 	uuid, err := s.service.Create(ctx, item)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
@@ -103,13 +106,12 @@ func (s *Server) createItem(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, uuid)
-
 }
 
 func (s *Server) updateItem(c *gin.Context) {
-	item := &entity.Item{}
+	var updateRequest UpdateItemRequest
 
-	if err := c.ShouldBindJSON(item); err != nil {
+	if err := c.ShouldBindJSON(updateRequest); err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusBadRequest, err)
 		return
@@ -121,7 +123,10 @@ func (s *Server) updateItem(c *gin.Context) {
 		context.Background(), 5*time.Second)
 	defer cancel()
 
-	updatedItem, err := s.service.Update(ctx, item)
+	item := updateRequest.ToPersistenceItem()
+
+	updatedItem, err := s.service.Update(
+		ctx, &item)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
@@ -153,7 +158,8 @@ func (s *Server) deleteItem(c *gin.Context) {
 		gin.H{"deleted": uuid})
 }
 
-// Temporary, will add auth to this handler.
+// Temporary, will add auth to the endpoint that creates
+// a new JWT token.
 func (s *Server) newJWT(c *gin.Context) {
 	token, err := auth.NewJWT(s.config.JWTSecret)
 	if err != nil {

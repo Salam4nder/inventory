@@ -3,7 +3,6 @@ package domain
 import (
 	"context"
 
-	"github.com/Salam4nder/inventory/internal/entity"
 	"github.com/Salam4nder/inventory/internal/persistence"
 
 	"github.com/google/uuid"
@@ -11,15 +10,15 @@ import (
 
 // Service is an interface of basic CRUD operations.
 type Service interface {
-	Create(ctx context.Context, item entity.Item) (
+	Create(ctx context.Context, item persistence.Item) (
 		uuid.UUID, error)
 	Read(ctx context.Context, uuid string) (
-		*entity.Item, error)
-	ReadAll(ctx context.Context) ([]*entity.Item, error)
-	ReadBy(ctx context.Context, filter entity.ItemFilter) (
-		[]*entity.Item, error)
-	Update(ctx context.Context, item *entity.Item) (
-		*entity.Item, error)
+		*persistence.Item, error)
+	ReadAll(ctx context.Context) ([]*persistence.Item, error)
+	ReadBy(ctx context.Context, filter persistence.ItemFilter) (
+		[]*persistence.Item, error)
+	Update(ctx context.Context, item *persistence.Item) (
+		*persistence.Item, error)
 	Delete(ctx context.Context, uuid string) error
 }
 

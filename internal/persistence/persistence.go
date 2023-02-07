@@ -5,7 +5,6 @@ import (
 	"database/sql"
 
 	"github.com/Salam4nder/inventory/config"
-	"github.com/Salam4nder/inventory/internal/entity"
 
 	"github.com/google/uuid"
 	// --nolint:staticcheck.
@@ -22,15 +21,15 @@ const (
 // Repository is a persistence layer interface
 // with basic CRUD operations.
 type Repository interface {
-	Create(ctx context.Context, item entity.Item) (
+	Create(ctx context.Context, item Item) (
 		uuid.UUID, error)
 	Read(ctx context.Context, uuid string) (
-		*entity.Item, error)
-	ReadAll(ctx context.Context) ([]*entity.Item, error)
-	ReadBy(ctx context.Context, filter entity.ItemFilter) (
-		[]*entity.Item, error)
-	Update(ctx context.Context, item *entity.Item) (
-		*entity.Item, error)
+		*Item, error)
+	ReadAll(ctx context.Context) ([]*Item, error)
+	ReadBy(ctx context.Context, filter ItemFilter) (
+		[]*Item, error)
+	Update(ctx context.Context, item *Item) (
+		*Item, error)
 	Delete(ctx context.Context, uuid string) error
 }
 

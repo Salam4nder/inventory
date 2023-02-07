@@ -9,7 +9,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Salam4nder/inventory/internal/entity"
 	"github.com/stretchr/testify/assert"
 
 	sqlMock "github.com/DATA-DOG/go-sqlmock"
@@ -29,7 +28,7 @@ func Test_Create_Success(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -71,7 +70,7 @@ func Test_Create_Rollback_And_Error_On_Timeout(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -113,7 +112,7 @@ func Test_Create_Error_On_BeginTX_Returns_Error(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -151,7 +150,7 @@ func Test_Create_Rollback_And_Error_On_Bad_Args(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "bad arg",
 		Unit:      "kg",
@@ -193,7 +192,7 @@ func Test_Create_Commit_Fails_Returns_Error(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -236,7 +235,7 @@ func Test_Read_Success(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -277,7 +276,7 @@ func Test_Read_Fails_No_Match(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -317,7 +316,7 @@ func Test_ReadAll_Success(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -390,14 +389,14 @@ func Test_ReadBy_Success(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:     uuid.New(),
 		Name:   "test",
 		Unit:   "kg",
 		Amount: 1.1,
 	}
 
-	filter := entity.ItemFilter{
+	filter := ItemFilter{
 		Name:   "test",
 		Unit:   "kg",
 		Amount: 1.1,
@@ -434,7 +433,7 @@ func Test_ReadBy_Fails_With_No_Filter(t *testing.T) {
 		DB: driver,
 	}
 
-	filter := entity.ItemFilter{}
+	filter := ItemFilter{}
 
 	ctx, cancel := context.WithTimeout(
 		context.Background(), 5*time.Second)
@@ -461,7 +460,7 @@ func Test_ReadBy_Query_Fails_Returns_Error(t *testing.T) {
 		DB: driver,
 	}
 
-	filter := entity.ItemFilter{
+	filter := ItemFilter{
 		Name:   "test",
 		Unit:   "kg",
 		Amount: 1.1,
@@ -499,7 +498,7 @@ func Test_Update_Success(t *testing.T) {
 		DB: driver,
 	}
 
-	item := &entity.Item{
+	item := &Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -539,7 +538,7 @@ func Test_Update_Fails_With_No_ID(t *testing.T) {
 		DB: driver,
 	}
 
-	item := &entity.Item{
+	item := &Item{
 		Name:      "test",
 		Unit:      "kg",
 		Amount:    1.1,
@@ -577,7 +576,7 @@ func Test_Delete_Success(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -616,7 +615,7 @@ func Test_Delete_Returns_Error_On_Fail(t *testing.T) {
 		DB: driver,
 	}
 
-	item := entity.Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -645,19 +644,19 @@ func Test_filterQueryBuilder(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		input     entity.ItemFilter
+		input     ItemFilter
 		wantQuery string
 		wantArgs  []interface{}
 	}{
 		{
 			name:      "empty filter returns default query",
-			input:     entity.ItemFilter{},
+			input:     ItemFilter{},
 			wantQuery: "SELECT * FROM inventory",
 			wantArgs:  nil,
 		},
 		{
 			name: "filter with name returns query with name",
-			input: entity.ItemFilter{
+			input: ItemFilter{
 				Name: "test",
 			},
 			wantQuery: "SELECT * FROM inventory WHERE name = $1",
@@ -665,7 +664,7 @@ func Test_filterQueryBuilder(t *testing.T) {
 		},
 		{
 			name: "filter with unit returns query with unit",
-			input: entity.ItemFilter{
+			input: ItemFilter{
 				Unit: "kg",
 			},
 			wantQuery: "SELECT * FROM inventory WHERE unit = $1",
@@ -673,7 +672,7 @@ func Test_filterQueryBuilder(t *testing.T) {
 		},
 		{
 			name: "filter with amount returns query with amount",
-			input: entity.ItemFilter{
+			input: ItemFilter{
 				Amount: 1.1,
 			},
 			wantQuery: "SELECT * FROM inventory WHERE amount = $1",
@@ -681,7 +680,7 @@ func Test_filterQueryBuilder(t *testing.T) {
 		},
 		{
 			name: "filter with expiresat returns query with expiresat",
-			input: entity.ItemFilter{
+			input: ItemFilter{
 				ExpiresAt: expiration,
 			},
 			wantQuery: "SELECT * FROM inventory WHERE expires_at = $1",
@@ -689,7 +688,7 @@ func Test_filterQueryBuilder(t *testing.T) {
 		},
 		{
 			name: "filter with name, amount returns query with name and amount",
-			input: entity.ItemFilter{
+			input: ItemFilter{
 				Name:   "test",
 				Amount: 1.1,
 			},
@@ -698,7 +697,7 @@ func Test_filterQueryBuilder(t *testing.T) {
 		},
 		{
 			name: "filter with unit, expiresat returns query with unit and expiresat",
-			input: entity.ItemFilter{
+			input: ItemFilter{
 				Unit:      "kg",
 				ExpiresAt: expiration,
 			},
@@ -707,7 +706,7 @@ func Test_filterQueryBuilder(t *testing.T) {
 		},
 		{
 			name: "full filter returns expected query",
-			input: entity.ItemFilter{
+			input: ItemFilter{
 				Name:      "test",
 				Unit:      "kg",
 				Amount:    1.1,

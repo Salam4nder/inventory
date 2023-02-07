@@ -1,4 +1,4 @@
-package entity
+package persistence
 
 import (
 	"time"
@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Item represents a single item in the inventory.
+// Item represents a single item in the database.
 type Item struct {
 	ID        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
