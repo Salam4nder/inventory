@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Salam4nder/inventory/internal/entity"
+	"github.com/Salam4nder/inventory/pkg/auth"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -150,4 +151,16 @@ func (s *Server) deleteItem(c *gin.Context) {
 
 	c.JSON(http.StatusOK,
 		gin.H{"deleted": uuid})
+}
+
+// Temporary, will add auth to this handler.
+func (s *Server) newJWT(c *gin.Context) {
+	token, err := auth.NewJWT(s.config.JWTSecret)
+	if err != nil {
+		s.logger.Error(err.Error(), zap.Error(err))
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, token)
 }
