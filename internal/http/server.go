@@ -48,6 +48,7 @@ func (s *Server) Start() {
 	defer stop()
 
 	// router.GET("/health", s.health)
+	router.GET("/auth", s.newJWT)
 	jwtRout := router.Group("/api").Use(JWTAuth(
 		s.config.JWTSecret))
 	{
