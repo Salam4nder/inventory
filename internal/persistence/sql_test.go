@@ -223,7 +223,8 @@ func Test_Create_Commit_Fails_Returns_Error(t *testing.T) {
 }
 
 func Test_Read_Success(t *testing.T) {
-	driver, mock, err := sqlMock.New()
+	driver, mock, err := sqlMock.New(
+		sqlMock.QueryMatcherOption(sqlMock.QueryMatcherEqual))
 	if err != nil {
 		t.Fatalf(
 			"unexpected error while creating sqlmock: %s",
@@ -247,7 +248,7 @@ func Test_Read_Success(t *testing.T) {
 		context.Background(), 5*time.Second)
 	defer cancel()
 
-	mock.ExpectQuery("SELECT FROM inventory").WithArgs(
+	mock.ExpectQuery("SELECT * FROM inventory WHERE id = $1").WithArgs(
 		item.ID.String()).WillReturnRows(
 		sqlMock.NewRows([]string{
 			"id", "name", "unit", "amount", "expires_at"}).AddRow(
@@ -264,7 +265,8 @@ func Test_Read_Success(t *testing.T) {
 }
 
 func Test_Read_Fails_No_Match(t *testing.T) {
-	driver, mock, err := sqlMock.New()
+	driver, mock, err := sqlMock.New(
+		sqlMock.QueryMatcherOption(sqlMock.QueryMatcherEqual))
 	if err != nil {
 		t.Fatalf(
 			"unexpected error while creating sqlmock: %s",
@@ -288,7 +290,7 @@ func Test_Read_Fails_No_Match(t *testing.T) {
 		context.Background(), 5*time.Second)
 	defer cancel()
 
-	mock.ExpectQuery("SELECT FROM inventory").WithArgs(
+	mock.ExpectQuery("SELECT * FROM inventory WHERE id = $1").WithArgs(
 		item.ID.String()).WillReturnError(
 		errors.New("no match"))
 
