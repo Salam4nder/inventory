@@ -25,3 +25,4 @@ services:
     depends_on: 
      postgres:
        condition: service_healthy
+##TODO: add nginx and redis services

@@ -14,7 +14,7 @@ const (
         VALUES (
         $1, $2, $3, $4) RETURNING id`
 
-	selectItem = `SELECT FROM inventory WHERE id = $1`
+	selectItem = `SELECT * FROM inventory WHERE id = $1`
 
 	selectAll = `SELECT * FROM inventory`
 
