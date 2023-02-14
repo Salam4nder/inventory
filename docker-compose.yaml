@@ -25,4 +25,8 @@ services:
     depends_on: 
      postgres:
        condition: service_healthy
-##TODO: add nginx and redis services
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass 12345
+    ports:
+      - "6379:6379"
