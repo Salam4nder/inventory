@@ -27,7 +27,7 @@ type Redis struct {
 func New(cfg config.Cache) (*Redis, error) {
 	redis := &Redis{
 		Client: redis.NewClient(&redis.Options{
-			Addr: cfg.Host,
+			Addr: cfg.Addr(),
 		}),
 	}
 

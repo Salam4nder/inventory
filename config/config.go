@@ -62,3 +62,8 @@ func (dbCfg *Database) PSQLConn() string {
 func (srvCfg *Server) Addr() string {
 	return fmt.Sprintf("%s:%s", srvCfg.Host, srvCfg.Port)
 }
+
+func (cacheCfg *Cache) Addr() string {
+	return fmt.Sprintf(
+		"redis://%s:%s", cacheCfg.Host, cacheCfg.Port)
+}
