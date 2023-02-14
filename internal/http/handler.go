@@ -27,7 +27,7 @@ func (s *Server) readItem(c *gin.Context) {
 	// }
 
 	ctx, cancel := context.WithTimeout(
-		context.Background(), 5*time.Second)
+		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
 	item, err := s.service.Read(ctx, uuid)
@@ -42,7 +42,7 @@ func (s *Server) readItem(c *gin.Context) {
 
 func (s *Server) readItems(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(
-		context.Background(), 5*time.Second)
+		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
 	items, err := s.service.ReadAll(ctx)
@@ -65,7 +65,7 @@ func (s *Server) readItemsBy(c *gin.Context) {
 	}
 
 	ctx, cancel := context.WithTimeout(
-		context.Background(), 5*time.Second)
+		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
 	items, err := s.service.ReadBy(ctx, filter)
@@ -93,7 +93,7 @@ func (s *Server) createItem(c *gin.Context) {
 	// }
 
 	ctx, cancel := context.WithTimeout(
-		context.Background(), 5*time.Second)
+		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
 	item := createRequest.ToPersistenceItem()
@@ -120,7 +120,7 @@ func (s *Server) updateItem(c *gin.Context) {
 	// s.cache.Delete(item.ID.String())
 
 	ctx, cancel := context.WithTimeout(
-		context.Background(), 5*time.Second)
+		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
 	item := updateRequest.ToPersistenceItem()
@@ -144,7 +144,7 @@ func (s *Server) deleteItem(c *gin.Context) {
 	}
 
 	ctx, cancel := context.WithTimeout(
-		context.Background(), 5*time.Second)
+		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
 	err := s.service.Delete(ctx, uuid)
