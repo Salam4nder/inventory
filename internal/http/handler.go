@@ -30,7 +30,7 @@ func (s *Server) readItem(c *gin.Context) {
 		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
-	item, err := s.service.Read(ctx, uuid)
+	item, err := s.storage.Read(ctx, uuid)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
@@ -45,7 +45,7 @@ func (s *Server) readItems(c *gin.Context) {
 		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
-	items, err := s.service.ReadAll(ctx)
+	items, err := s.storage.ReadAll(ctx)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
@@ -68,7 +68,7 @@ func (s *Server) readItemsBy(c *gin.Context) {
 		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
-	items, err := s.service.ReadBy(ctx, filter)
+	items, err := s.storage.ReadBy(ctx, filter)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
@@ -98,7 +98,7 @@ func (s *Server) createItem(c *gin.Context) {
 
 	item := createRequest.ToPersistenceItem()
 
-	uuid, err := s.service.Create(ctx, item)
+	uuid, err := s.storage.Create(ctx, item)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
@@ -125,7 +125,7 @@ func (s *Server) updateItem(c *gin.Context) {
 
 	item := updateRequest.ToPersistenceItem()
 
-	updatedItem, err := s.service.Update(
+	updatedItem, err := s.storage.Update(
 		ctx, &item)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
@@ -147,7 +147,7 @@ func (s *Server) deleteItem(c *gin.Context) {
 		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
-	err := s.service.Delete(ctx, uuid)
+	err := s.storage.Delete(ctx, uuid)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)

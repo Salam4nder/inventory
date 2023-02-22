@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/Salam4nder/inventory/config"
-	"github.com/Salam4nder/inventory/internal/domain"
 	"github.com/Salam4nder/inventory/internal/http"
 	"github.com/Salam4nder/inventory/internal/persistence"
 	"github.com/Salam4nder/inventory/pkg/logger"
@@ -19,21 +18,19 @@ func main() {
 	logger, err := logger.New("")
 	panicOnError(err)
 
-	PSQL, err := persistence.New(
+	store, err := persistence.New(
 		&cfg.DB, persistence.PostgresDriver)
 	panicOnError(err)
-	defer PSQL.DB.Close()
+	defer store.DB.Close()
 	logger.Info("Database connection established...")
 
 	migration := migration.New(
-		PSQL.DB, logger)
+		store.DB, logger)
 	if err := migration.Migrate(); err != nil {
 		panicOnError(err)
 	}
 
-	service := domain.New(PSQL)
-
-	server := http.New(cfg.HTTP, service, logger)
+	server := http.New(cfg.HTTP, store, logger)
 	server.Start()
 }
 
