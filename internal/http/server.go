@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Salam4nder/inventory/config"
+	"github.com/Salam4nder/inventory/internal/config"
 	"github.com/Salam4nder/inventory/internal/persistence"
 
 	"github.com/gin-gonic/gin"

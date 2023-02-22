@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/Salam4nder/inventory/config"
+	"github.com/Salam4nder/inventory/internal/config"
 	"github.com/Salam4nder/inventory/internal/http"
 	"github.com/Salam4nder/inventory/internal/persistence"
 	"github.com/Salam4nder/inventory/pkg/logger"

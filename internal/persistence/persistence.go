@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/Salam4nder/inventory/config"
+	"github.com/Salam4nder/inventory/internal/config"
 
 	"github.com/google/uuid"
 	// --nolint:staticcheck.

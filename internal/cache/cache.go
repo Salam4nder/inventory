@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Salam4nder/inventory/config"
+	"github.com/Salam4nder/inventory/internal/config"
 
 	"github.com/go-redis/redis/v8"
 )
