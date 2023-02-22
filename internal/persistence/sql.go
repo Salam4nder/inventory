@@ -8,24 +8,8 @@ import (
 	"github.com/google/uuid"
 )
 
-const (
-	insertItem = `INSERT INTO inventory (
-        name, unit, amount, expires_at) 
-        VALUES (
-        $1, $2, $3, $4) RETURNING id`
-
-	selectItem = `SELECT * FROM inventory WHERE id = $1`
-
-	selectAll = `SELECT * FROM inventory`
-
-	updateItem = `UPDATE inventory SET 
-    name = $1, unit = $2, amount = $3, expires_at = $4 WHERE id = $5`
-
-	deleteItem = `DELETE FROM inventory WHERE id = $1`
-)
-
 // Create creates a new item in the database.
-func (s *Storage) Create(
+func (s *SQLDatabase) Create(
 	ctx context.Context, item Item) (uuid.UUID, error) {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
@@ -33,9 +17,19 @@ func (s *Storage) Create(
 	}
 	defer tx.Rollback()
 
+	query := `INSERT INTO inventory (
+        name, unit, amount, expires_at)
+        VALUES (
+        $1, $2, $3, $4) RETURNING id`
+
 	if err := tx.QueryRowContext(
-		ctx, insertItem, item.Name, item.Unit,
-		item.Amount, item.ExpiresAt).Scan(&item.ID); err != nil {
+		ctx,
+		query,
+		item.Name,
+		item.Unit,
+		item.Amount,
+		item.ExpiresAt).
+		Scan(&item.ID); err != nil {
 		return uuid.Nil, err
 	}
 
@@ -47,14 +41,21 @@ func (s *Storage) Create(
 }
 
 // Read reads an item from the database based off of an uuid.
-func (s *Storage) Read(
+func (s *SQLDatabase) Read(
 	ctx context.Context, uuid string) (*Item, error) {
 	item := &Item{}
 
+	query := `SELECT * FROM inventory WHERE id = $1`
+
 	if err := s.DB.QueryRowContext(
-		ctx, selectItem, uuid).Scan(
-		&item.ID, &item.Name, &item.Unit,
-		&item.Amount, &item.ExpiresAt); err != nil {
+		ctx,
+		query,
+		uuid).Scan(
+		&item.ID,
+		&item.Name,
+		&item.Unit,
+		&item.Amount,
+		&item.ExpiresAt); err != nil {
 		return &Item{}, err
 	}
 
@@ -62,9 +63,11 @@ func (s *Storage) Read(
 }
 
 // ReadAll reads all items from the database.
-func (s *Storage) ReadAll(
+func (s *SQLDatabase) ReadAll(
 	ctx context.Context) ([]*Item, error) {
-	rows, err := s.DB.QueryContext(ctx, selectAll)
+	query := `SELECT * FROM inventory`
+
+	rows, err := s.DB.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -76,8 +79,11 @@ func (s *Storage) ReadAll(
 		item := &Item{}
 
 		if err := rows.Scan(
-			&item.ID, &item.Name, &item.Unit,
-			&item.Amount, &item.ExpiresAt); err != nil {
+			&item.ID,
+			&item.Name,
+			&item.Unit,
+			&item.Amount,
+			&item.ExpiresAt); err != nil {
 			return nil, err
 		}
 
@@ -89,7 +95,7 @@ func (s *Storage) ReadAll(
 
 // ReadBy reads items fro the database by the given filter.
 // It returns an error if the filter is empty.
-func (s *Storage) ReadBy(
+func (s *SQLDatabase) ReadBy(
 	ctx context.Context, filter ItemFilter) (
 	[]*Item, error) {
 	items := []*Item{}
@@ -109,8 +115,11 @@ func (s *Storage) ReadBy(
 	for rows.Next() {
 		item := Item{}
 		if err := rows.Scan(
-			&item.ID, &item.Name, &item.Unit,
-			&item.Amount, &item.ExpiresAt); err != nil {
+			&item.ID,
+			&item.Name,
+			&item.Unit,
+			&item.Amount,
+			&item.ExpiresAt); err != nil {
 			return []*Item{}, err
 		}
 		items = append(items, &item)
@@ -122,7 +131,7 @@ func (s *Storage) ReadBy(
 }
 
 // Update updates an item in the database.
-func (s *Storage) Update(
+func (s *SQLDatabase) Update(
 	ctx context.Context, item *Item) (
 	*Item, error) {
 	tx, err := s.DB.BeginTx(ctx, nil)
@@ -131,9 +140,18 @@ func (s *Storage) Update(
 	}
 	defer tx.Rollback()
 
+	query := `UPDATE inventory SET
+        name = $1, unit = $2, amount = $3, expires_at = $4
+        WHERE id = $5`
+
 	if _, err := tx.ExecContext(
-		ctx, updateItem, item.Name, item.Unit,
-		item.Amount, item.ExpiresAt, item.ID); err != nil {
+		ctx,
+		query,
+		item.Name,
+		item.Unit,
+		item.Amount,
+		item.ExpiresAt,
+		item.ID); err != nil {
 		return &Item{}, err
 	}
 
@@ -145,7 +163,7 @@ func (s *Storage) Update(
 }
 
 // Delete deletes an item from the database.
-func (s *Storage) Delete(
+func (s *SQLDatabase) Delete(
 	ctx context.Context, uuid string) error {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
@@ -153,8 +171,12 @@ func (s *Storage) Delete(
 	}
 	defer tx.Rollback()
 
+	query := `DELETE FROM inventory WHERE id = $1`
+
 	if _, err := tx.ExecContext(
-		ctx, deleteItem, uuid); err != nil {
+		ctx,
+		query,
+		uuid); err != nil {
 		return err
 	}
 
@@ -199,7 +221,7 @@ func filterQueryBuilder(filter ItemFilter) (
 	}
 
 	if len(args) == 0 {
-		query = selectAll
+		query = ""
 	}
 
 	return query, args

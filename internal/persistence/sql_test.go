@@ -24,7 +24,7 @@ func Test_Create_Success(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -66,7 +66,7 @@ func Test_Create_Rollback_And_Error_On_Timeout(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -108,7 +108,7 @@ func Test_Create_Error_On_BeginTX_Returns_Error(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -146,7 +146,7 @@ func Test_Create_Rollback_And_Error_On_Bad_Args(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -188,7 +188,7 @@ func Test_Create_Commit_Fails_Returns_Error(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -232,7 +232,7 @@ func Test_Read_Success(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -274,7 +274,7 @@ func Test_Read_Fails_No_Match(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -314,7 +314,7 @@ func Test_ReadAll_Success(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -355,7 +355,7 @@ func Test_ReadAll_Query_Fails_Returns_Error(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -387,7 +387,7 @@ func Test_ReadBy_Success(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -431,7 +431,7 @@ func Test_ReadBy_Fails_With_No_Filter(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -458,7 +458,7 @@ func Test_ReadBy_Query_Fails_Returns_Error(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -496,7 +496,7 @@ func Test_Update_Success(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -536,7 +536,7 @@ func Test_Update_Fails_With_No_ID(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -574,7 +574,7 @@ func Test_Delete_Success(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -613,7 +613,7 @@ func Test_Delete_Returns_Error_On_Fail(t *testing.T) {
 	}
 	defer driver.Close()
 
-	storage := Storage{
+	storage := SQLDatabase{
 		DB: driver,
 	}
 
@@ -651,9 +651,9 @@ func Test_filterQueryBuilder(t *testing.T) {
 		wantArgs  []interface{}
 	}{
 		{
-			name:      "empty filter returns default query",
+			name:      "empty filter returns empty query",
 			input:     ItemFilter{},
-			wantQuery: "SELECT * FROM inventory",
+			wantQuery: "",
 			wantArgs:  nil,
 		},
 		{

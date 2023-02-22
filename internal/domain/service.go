@@ -24,10 +24,10 @@ type Service interface {
 
 // Inventory is a service that implements the Service interface.
 type Inventory struct {
-	storage persistence.Repository
+	storage persistence.Storage
 }
 
 // New returns a new Inventory service.
-func New(r persistence.Repository) *Inventory {
+func New(r persistence.Storage) *Inventory {
 	return &Inventory{storage: r}
 }

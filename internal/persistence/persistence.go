@@ -18,9 +18,9 @@ const (
 	MySQLDriver = "mysql"
 )
 
-// Repository is a persistence layer interface
+// Storage is a persistence layer interface
 // with basic CRUD operations.
-type Repository interface {
+type Storage interface {
 	Create(ctx context.Context, item Item) (
 		uuid.UUID, error)
 	Read(ctx context.Context, uuid string) (
@@ -33,18 +33,18 @@ type Repository interface {
 	Delete(ctx context.Context, uuid string) error
 }
 
-// Storage is a persistence layer that implements
+// SQLDatabase is a persistence layer that implements
 // the Repository interface.
-type Storage struct {
+type SQLDatabase struct {
 	DB     *sql.DB
 	Config config.Database
 }
 
-// New creates a new Database instance from the given
+// New creates a new SQLDatabase instance from the given
 // config.Database and driver string.
 // Drivers are provided in this package as constants.
 func New(
-	dbCfg *config.Database, driver string) (*Storage, error) {
+	dbCfg *config.Database, driver string) (*SQLDatabase, error) {
 	db, err := sql.Open(driver, dbCfg.PSQLConn())
 	if err != nil {
 		return nil, err
@@ -54,5 +54,5 @@ func New(
 		return nil, err
 	}
 
-	return &Storage{DB: db, Config: *dbCfg}, nil
+	return &SQLDatabase{DB: db, Config: *dbCfg}, nil
 }
