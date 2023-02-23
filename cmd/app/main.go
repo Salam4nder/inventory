@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/Salam4nder/inventory/internal/cache"
 	"github.com/Salam4nder/inventory/internal/config"
 	"github.com/Salam4nder/inventory/internal/http"
 	"github.com/Salam4nder/inventory/internal/persistence"
@@ -19,18 +20,23 @@ func main() {
 	panicOnError(err)
 
 	store, err := persistence.New(
-		&cfg.DB, persistence.PostgresDriver)
+		cfg.DB, persistence.PostgresDriver)
 	panicOnError(err)
 	defer store.DB.Close()
-	logger.Info("Database connection established...")
+	logger.Info("PSQL connection established...")
 
 	migration := migration.New(
 		store.DB, logger)
 	if err := migration.Migrate(); err != nil {
 		panicOnError(err)
 	}
+	cache, err := cache.New(cfg.Cache)
+	if err != nil {
+		panicOnError(err)
+	}
+	logger.Info("Redis connection established...")
 
-	server := http.New(cfg.HTTP, store, logger)
+	server := http.New(cfg.HTTP, store, cache, logger)
 	server.Start()
 }
 
