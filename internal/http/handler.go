@@ -19,16 +19,15 @@ func (s *Server) readItem(c *gin.Context) {
 		return
 	}
 
-	// TODO move caching to middleware
-	// if cachedItem := s.cache.Get(
-	// 	uuid); cachedItem != "redis: nil" {
-	// 	c.JSON(http.StatusOK, cachedItem)
-	// 	return
-	// }
-
 	ctx, cancel := context.WithTimeout(
 		c.Request.Context(), 5*time.Second)
 	defer cancel()
+
+	cachedItem, err := s.cache.Get(ctx, uuid)
+	if err == nil {
+		c.JSON(http.StatusOK, cachedItem)
+		return
+	}
 
 	item, err := s.storage.Read(ctx, uuid)
 	if err != nil {
@@ -87,22 +86,25 @@ func (s *Server) createItem(c *gin.Context) {
 		return
 	}
 
-	// if err := s.cache.Set(
-	// 	item.ID.String(), item, 1*time.Hour); err != nil {
-	// 	s.logger.Error(err.Error(), zap.Error(err))
-	// }
+	item := createRequest.ToPersistenceItem()
 
 	ctx, cancel := context.WithTimeout(
 		c.Request.Context(), 5*time.Second)
 	defer cancel()
-
-	item := createRequest.ToPersistenceItem()
 
 	uuid, err := s.storage.Create(ctx, item)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
 		return
+	}
+
+	if err := s.cache.Set(
+		ctx,
+		uuid.String(),
+		item,
+		time.Minute*20); err != nil {
+		s.logger.Error(err.Error(), zap.Error(err))
 	}
 
 	c.JSON(http.StatusOK, uuid)
@@ -117,20 +119,26 @@ func (s *Server) updateItem(c *gin.Context) {
 		return
 	}
 
-	// s.cache.Delete(item.ID.String())
+	item := updateRequest.ToPersistenceItem()
 
 	ctx, cancel := context.WithTimeout(
 		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
-	item := updateRequest.ToPersistenceItem()
-
 	updatedItem, err := s.storage.Update(
-		ctx, &item)
+		ctx, item)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
 		return
+	}
+
+	if err := s.cache.Set(
+		ctx,
+		updatedItem.ID.String(),
+		updatedItem,
+		time.Minute*20); err != nil {
+		s.logger.Error(err.Error(), zap.Error(err))
 	}
 
 	c.JSON(http.StatusOK, updatedItem)
@@ -147,11 +155,14 @@ func (s *Server) deleteItem(c *gin.Context) {
 		c.Request.Context(), 5*time.Second)
 	defer cancel()
 
-	err := s.storage.Delete(ctx, uuid)
-	if err != nil {
+	if err := s.storage.Delete(ctx, uuid); err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
 		return
+	}
+
+	if err := s.cache.Delete(ctx, uuid); err != nil {
+		s.logger.Info(err.Error(), zap.Error(err))
 	}
 
 	c.JSON(http.StatusOK,
