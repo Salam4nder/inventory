@@ -42,8 +42,8 @@ func (s *SQLDatabase) Create(
 
 // Read reads an item from the database based off of an uuid.
 func (s *SQLDatabase) Read(
-	ctx context.Context, uuid string) (*Item, error) {
-	item := &Item{}
+	ctx context.Context, uuid string) (Item, error) {
+	var item Item
 
 	query := `SELECT * FROM inventory WHERE id = $1`
 
@@ -56,7 +56,7 @@ func (s *SQLDatabase) Read(
 		&item.Unit,
 		&item.Amount,
 		&item.ExpiresAt); err != nil {
-		return &Item{}, err
+		return Item{}, err
 	}
 
 	return item, nil
@@ -64,7 +64,7 @@ func (s *SQLDatabase) Read(
 
 // ReadAll reads all items from the database.
 func (s *SQLDatabase) ReadAll(
-	ctx context.Context) ([]*Item, error) {
+	ctx context.Context) ([]Item, error) {
 	query := `SELECT * FROM inventory`
 
 	rows, err := s.DB.QueryContext(ctx, query)
@@ -73,10 +73,10 @@ func (s *SQLDatabase) ReadAll(
 	}
 	defer rows.Close()
 
-	items := []*Item{}
+	var items []Item
 
 	for rows.Next() {
-		item := &Item{}
+		var item Item
 
 		if err := rows.Scan(
 			&item.ID,
@@ -97,8 +97,8 @@ func (s *SQLDatabase) ReadAll(
 // It returns an error if the filter is empty.
 func (s *SQLDatabase) ReadBy(
 	ctx context.Context, filter ItemFilter) (
-	[]*Item, error) {
-	items := []*Item{}
+	[]Item, error) {
+	var items []Item
 
 	query, args := filterQueryBuilder(filter)
 	if len(args) == 0 {
@@ -113,16 +113,16 @@ func (s *SQLDatabase) ReadBy(
 	defer rows.Close()
 
 	for rows.Next() {
-		item := Item{}
+		var item Item
 		if err := rows.Scan(
 			&item.ID,
 			&item.Name,
 			&item.Unit,
 			&item.Amount,
 			&item.ExpiresAt); err != nil {
-			return []*Item{}, err
+			return []Item{}, err
 		}
-		items = append(items, &item)
+		items = append(items, item)
 	}
 
 	err = rows.Err()
@@ -132,11 +132,10 @@ func (s *SQLDatabase) ReadBy(
 
 // Update updates an item in the database.
 func (s *SQLDatabase) Update(
-	ctx context.Context, item *Item) (
-	*Item, error) {
+	ctx context.Context, item Item) (Item, error) {
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
-		return &Item{}, err
+		return Item{}, err
 	}
 	defer tx.Rollback()
 
@@ -152,11 +151,11 @@ func (s *SQLDatabase) Update(
 		item.Amount,
 		item.ExpiresAt,
 		item.ID); err != nil {
-		return &Item{}, err
+		return Item{}, err
 	}
 
 	if err := tx.Commit(); err != nil {
-		return &Item{}, err
+		return Item{}, err
 	}
 
 	return item, nil

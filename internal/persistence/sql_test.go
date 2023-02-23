@@ -500,7 +500,7 @@ func Test_Update_Success(t *testing.T) {
 		DB: driver,
 	}
 
-	item := &Item{
+	item := Item{
 		ID:        uuid.New(),
 		Name:      "test",
 		Unit:      "kg",
@@ -540,7 +540,7 @@ func Test_Update_Fails_With_No_ID(t *testing.T) {
 		DB: driver,
 	}
 
-	item := &Item{
+	item := Item{
 		Name:      "test",
 		Unit:      "kg",
 		Amount:    1.1,
