@@ -34,7 +34,7 @@ type Storage interface {
 }
 
 // SQLDatabase is a persistence layer that implements
-// the Repository interface.
+// the Storage interface.
 type SQLDatabase struct {
 	DB     *sql.DB
 	Config config.Database
