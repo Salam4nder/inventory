@@ -1,24 +1,29 @@
 package cache
 
 import (
+	"bytes"
 	"context"
+	"encoding/gob"
+	"errors"
 	"time"
 
 	"github.com/Salam4nder/inventory/internal/config"
+	"github.com/Salam4nder/inventory/internal/persistence"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/google/uuid"
 )
 
-// Provider is an abstract interface for a cache provider.
-type Provider interface {
-	Delete(key string) int64
-	Set(
-		key string, value interface{},
-		expiryTime time.Duration) error
-	Get(Key string) string
+// Service is an abstract interface for a caching service.
+type Service interface {
+	Get(ctx context.Context, uuid uuid.UUID) (
+		persistence.Item, error)
+	Set(ctx context.Context, key uuid.UUID,
+		item persistence.Item, expiration time.Duration) error
+	Delete(ctx context.Context, uuid uuid.UUID) error
 }
 
-// Redis is an implementation of Provider interface.
+// Redis is an implementation of the cache.Service interface.
 type Redis struct {
 	Client *redis.Client
 }
@@ -40,19 +45,57 @@ func New(cfg config.Cache) (*Redis, error) {
 	return redis, nil
 }
 
-// Get returns the value of the key.
-func (c *Redis) Get(ctx context.Context, Key string) string {
-	return c.Client.Get(ctx, Key).Val()
+// Get checks if a persistence.Item with the given uuid
+// exists in the cache. If the key does not exist or if
+// there is an error, an empty item and an error are returned.
+func (r *Redis) Get(
+	ctx context.Context, uuid uuid.UUID) (persistence.Item, error) {
+	cmd := r.Client.Get(ctx, uuid.String())
+
+	// Bytes() will not attempt to convert the command to
+	// bytes if there was an error with the GET command,
+	// e.g. the key does not exist, or connection error.
+	cmdBytes, err := cmd.Bytes()
+	if err != nil {
+		return persistence.Item{}, err
+	}
+
+	bReader := bytes.NewReader(cmdBytes)
+
+	var item persistence.Item
+
+	if err := gob.NewDecoder(bReader).Decode(&item); err != nil {
+		return persistence.Item{}, err
+	}
+
+	return item, nil
 }
 
-// Set sets the value of the key.
-func (c *Redis) Set(
-	ctx context.Context, key string, value interface{},
-	expiryTime time.Duration) error {
-	return c.Client.Set(ctx, key, value, expiryTime).Err()
+// Set caches the given item with the given uuid as the key.
+// If the key already exists, it will be overwritten.
+// If there is an error, it will be returned.
+func (r *Redis) Set(
+	ctx context.Context,
+	key uuid.UUID,
+	item persistence.Item,
+	expiration time.Duration) error {
+	var buffer bytes.Buffer
+
+	if err := gob.NewEncoder(&buffer).Encode(item); err != nil {
+		return err
+	}
+
+	return r.Client.Set(
+		ctx, key.String(), buffer.Bytes(), expiration).Err()
 }
 
-// Delete deletes the key.
-func (c *Redis) Delete(ctx context.Context, key string) int64 {
-	return c.Client.Del(ctx, key).Val()
+// Delete removes the item with the given uuid from the cache.
+// If the key does not exist, an error is returned.
+func (r *Redis) Delete(ctx context.Context, uuid uuid.UUID) error {
+	res := r.Client.Del(ctx, uuid.String()).Val()
+	if res == 0 {
+		return errors.New("error deleting key")
+	}
+
+	return nil
 }
