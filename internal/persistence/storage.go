@@ -33,8 +33,7 @@ type Storage interface {
 	Delete(ctx context.Context, uuid string) error
 }
 
-// SQLDatabase is a persistence layer that implements
-// the Storage interface.
+// SQLDatabase implements the Storage interface.
 type SQLDatabase struct {
 	DB     *sql.DB
 	Config config.Database
@@ -44,7 +43,7 @@ type SQLDatabase struct {
 // config.Database and driver string.
 // Drivers are provided in this package as constants.
 func New(
-	dbCfg *config.Database, driver string) (*SQLDatabase, error) {
+	dbCfg config.Database, driver string) (*SQLDatabase, error) {
 	db, err := sql.Open(driver, dbCfg.PSQLConn())
 	if err != nil {
 		return nil, err
@@ -54,5 +53,5 @@ func New(
 		return nil, err
 	}
 
-	return &SQLDatabase{DB: db, Config: *dbCfg}, nil
+	return &SQLDatabase{DB: db, Config: dbCfg}, nil
 }
