@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/Salam4nder/inventory/internal/cache"
 	"github.com/Salam4nder/inventory/internal/config"
 	"github.com/Salam4nder/inventory/internal/persistence"
 
@@ -19,6 +20,7 @@ type Server struct {
 	http    *http.Server
 	config  config.Server
 	storage persistence.Storage
+	cache   cache.Service
 	logger  *zap.Logger
 }
 
@@ -26,6 +28,7 @@ type Server struct {
 func New(
 	cfg config.Server,
 	store persistence.Storage,
+	cache cache.Service,
 	log *zap.Logger) *Server {
 	srv := &http.Server{
 		Addr: cfg.Addr(),
@@ -35,6 +38,7 @@ func New(
 		http:    srv,
 		config:  cfg,
 		storage: store,
+		cache:   cache,
 		logger:  log,
 	}
 }
