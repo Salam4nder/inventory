@@ -63,7 +63,7 @@ func (srvCfg *Server) Addr() string {
 	return fmt.Sprintf("%s:%s", srvCfg.Host, srvCfg.Port)
 }
 
+// Addr returns the configured cache address.
 func (cacheCfg *Cache) Addr() string {
-	return fmt.Sprintf(
-		"redis://%s:%s", cacheCfg.Host, cacheCfg.Port)
+	return fmt.Sprintf("%s:%s", cacheCfg.Host, cacheCfg.Port)
 }
