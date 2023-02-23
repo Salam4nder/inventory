@@ -11,16 +11,15 @@ import (
 	"github.com/Salam4nder/inventory/internal/persistence"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/google/uuid"
 )
 
 // Service is an abstract interface for a caching service.
 type Service interface {
-	Get(ctx context.Context, uuid uuid.UUID) (
+	Get(ctx context.Context, uuid string) (
 		persistence.Item, error)
-	Set(ctx context.Context, key uuid.UUID,
+	Set(ctx context.Context, key string,
 		item persistence.Item, expiration time.Duration) error
-	Delete(ctx context.Context, uuid uuid.UUID) error
+	Delete(ctx context.Context, uuid string) error
 }
 
 // Redis is an implementation of the cache.Service interface.
@@ -50,8 +49,8 @@ func New(cfg config.Cache) (*Redis, error) {
 // exists in the cache. If the key does not exist or if
 // there is an error, an empty item and an error are returned.
 func (r *Redis) Get(
-	ctx context.Context, uuid uuid.UUID) (persistence.Item, error) {
-	cmd := r.Client.Get(ctx, uuid.String())
+	ctx context.Context, uuid string) (persistence.Item, error) {
+	cmd := r.Client.Get(ctx, uuid)
 
 	// Bytes() will not attempt to convert the command to
 	// bytes if there was an error with the GET command,
@@ -77,7 +76,7 @@ func (r *Redis) Get(
 // If there is an error, it will be returned.
 func (r *Redis) Set(
 	ctx context.Context,
-	key uuid.UUID,
+	key string,
 	item persistence.Item,
 	expiration time.Duration) error {
 	var buffer bytes.Buffer
@@ -87,13 +86,13 @@ func (r *Redis) Set(
 	}
 
 	return r.Client.Set(
-		ctx, key.String(), buffer.Bytes(), expiration).Err()
+		ctx, key, buffer.Bytes(), expiration).Err()
 }
 
 // Delete removes the item with the given uuid from the cache.
 // If the key does not exist, an error is returned.
-func (r *Redis) Delete(ctx context.Context, uuid uuid.UUID) error {
-	res := r.Client.Del(ctx, uuid.String()).Val()
+func (r *Redis) Delete(ctx context.Context, uuid string) error {
+	res := r.Client.Del(ctx, uuid).Val()
 	if res == 0 {
 		return errors.New("error deleting key")
 	}
