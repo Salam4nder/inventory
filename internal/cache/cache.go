@@ -34,6 +34,7 @@ func New(cfg config.Cache) (*Redis, error) {
 		Client: redis.NewClient(&redis.Options{
 			Addr:     cfg.Addr(),
 			Password: cfg.Password,
+			DB:       0,
 		}),
 	}
 
