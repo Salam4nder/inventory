@@ -24,6 +24,13 @@ type Server struct {
 	logger  *zap.Logger
 }
 
+// Health is the structure for the health check endpoint.
+type Health struct {
+	Service string `json:"service"`
+	Status  string `json:"status"`
+	Time    string `json:"time"`
+}
+
 // New creates a new instance of the API server.
 func New(
 	cfg config.Server,
@@ -74,10 +81,11 @@ func (s *Server) Start() {
 
 func (s *Server) initEndpoints() {
 	router := gin.Default()
-	// s.router.GET("/health", s.health)
 	router.GET("/auth", s.newJWT)
-	authRoute := router.Group("/api").Use(JWTAuth(
-		s.config.JWTSecret))
+	router.GET("/health", s.health)
+
+	authRoute := router.Group("/api").
+		Use(JWTAuth(s.config.JWTSecret))
 	{
 		authRoute.GET("/item", s.readItems)
 		authRoute.GET("/item/:uuid", s.readItem)

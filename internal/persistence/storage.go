@@ -31,12 +31,18 @@ type Storage interface {
 	Update(ctx context.Context, item Item) (
 		Item, error)
 	Delete(ctx context.Context, uuid string) error
+	Ping(ctx context.Context) error
 }
 
 // SQLDatabase implements the Storage interface.
 type SQLDatabase struct {
 	DB     *sql.DB
 	Config config.Database
+}
+
+// Ping checks the connection to the database.
+func (s *SQLDatabase) Ping(ctx context.Context) error {
+	return s.DB.PingContext(ctx)
 }
 
 // New creates a new SQLDatabase instance from the given

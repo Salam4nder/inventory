@@ -20,6 +20,7 @@ type Service interface {
 	Set(ctx context.Context, key string,
 		item persistence.Item, expiration time.Duration) error
 	Delete(ctx context.Context, uuid string) error
+	Ping(ctx context.Context) error
 }
 
 // Redis is an implementation of the cache.Service interface.
@@ -43,6 +44,11 @@ func New(cfg config.Cache) (*Redis, error) {
 	}
 
 	return redis, nil
+}
+
+// Ping checks if Redis is available.
+func (r *Redis) Ping(ctx context.Context) error {
+	return r.Client.Ping(ctx).Err()
 }
 
 // Get checks if a persistence.Item with the given uuid

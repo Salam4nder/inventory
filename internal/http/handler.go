@@ -169,6 +169,47 @@ func (s *Server) deleteItem(c *gin.Context) {
 		gin.H{"deleted": uuid})
 }
 
+// health check
+func (s *Server) health(c *gin.Context) {
+	var health []Health
+
+	dbStatus := "Healthy"
+	cacheStatus := "Healthy"
+	serviceStatus := "Healthy"
+
+	ctx, cancel := context.WithTimeout(
+		c.Request.Context(), 5*time.Second)
+	defer cancel()
+
+	err := s.storage.Ping(ctx)
+	if err != nil {
+		dbStatus = "Unhealthy"
+	}
+
+	err = s.cache.Ping(ctx)
+	if err != nil {
+		cacheStatus = "Unhealthy"
+	}
+
+	health = append(health, Health{
+		Service: "Database",
+		Status:  dbStatus,
+		Time:    time.Now().Local().Format(time.DateTime),
+	})
+	health = append(health, Health{
+		Service: "Cache",
+		Status:  cacheStatus,
+		Time:    time.Now().String(),
+	})
+	health = append(health, Health{
+		Service: "Service",
+		Status:  serviceStatus,
+		Time:    time.Now().String(),
+	})
+
+	c.JSON(http.StatusOK, health)
+}
+
 // Temporary, will add auth to the endpoint that creates
 // a new JWT token.
 func (s *Server) newJWT(c *gin.Context) {
