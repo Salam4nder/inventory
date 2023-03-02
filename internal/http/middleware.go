@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// JWTAuth is a middleware that checks if the
+// JWTValidator is a middleware that checks if the
 // request has a valid JWT token.
-func JWTAuth(secret string) gin.HandlerFunc {
+func JWTValidator(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
 		if token == "" {
