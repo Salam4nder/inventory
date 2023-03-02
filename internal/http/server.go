@@ -85,7 +85,7 @@ func (s *Server) initEndpoints() {
 	router.GET("/health", s.health)
 
 	authRoute := router.Group("/api").
-		Use(JWTValidator(s.config.JWTSecret))
+		Use(jwtValidator(s.config.JWTSecret))
 	{
 		authRoute.GET("/item", s.readItems)
 		authRoute.GET("/item/:uuid", s.readItem)
