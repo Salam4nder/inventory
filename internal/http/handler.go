@@ -199,12 +199,12 @@ func (s *Server) health(c *gin.Context) {
 	health = append(health, Health{
 		Service: "Cache",
 		Status:  cacheStatus,
-		Time:    time.Now().String(),
+		Time:    time.Now().Local().Format(time.DateTime),
 	})
 	health = append(health, Health{
 		Service: "Service",
 		Status:  serviceStatus,
-		Time:    time.Now().String(),
+		Time:    time.Now().Local().Format(time.DateTime),
 	})
 
 	c.JSON(http.StatusOK, health)
