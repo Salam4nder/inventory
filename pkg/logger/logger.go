@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// New returns a new logger that writes to file and
+// New returns a new zap logger that writes to file and
 // console. Pass in an empty string to only log to console.
 // Returns an error if file interaction fails.
 func New(file string) (*zap.Logger, error) {
