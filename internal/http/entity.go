@@ -31,7 +31,7 @@ type UpdateItemRequest struct {
 
 // ToPersistenceItem converts CreateItemRequest
 // to a persistence.Item.
-func (r CreateItemRequest) ToPersistenceItem() persistence.Item {
+func (r *CreateItemRequest) ToPersistenceItem() persistence.Item {
 	return persistence.Item{
 		Name:      r.Name,
 		Unit:      r.Unit,
@@ -42,7 +42,7 @@ func (r CreateItemRequest) ToPersistenceItem() persistence.Item {
 
 // ToPersistenceItem converts UpdateItemRequest
 // to a persistence.Item.
-func (r UpdateItemRequest) ToPersistenceItem() persistence.Item {
+func (r *UpdateItemRequest) ToPersistenceItem() persistence.Item {
 	return persistence.Item{
 		ID:        r.ID,
 		Name:      r.Name,
