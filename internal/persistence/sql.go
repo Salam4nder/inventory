@@ -90,6 +90,10 @@ func (s *SQLDatabase) ReadAll(
 		items = append(items, item)
 	}
 
+	if len(items) < 1 {
+		return []Item{}, nil
+	}
+
 	return items, nil
 }
 
