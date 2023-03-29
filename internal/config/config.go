@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/plaid/go-envvar/envvar"
 )
@@ -24,10 +25,11 @@ type Database struct {
 
 // Server is the HTTP server configuration.
 type Server struct {
-	Host      string `envvar:"HOST"`
-	Port      string `envvar:"PORT"`
-	JWTSecret string `envvar:"JWT"`
-	LogFile   string `envvar:"LOG_FILE"`
+	Host                  string        `envvar:"HOST"`
+	Port                  string        `envvar:"PORT"`
+	JWTSecret             string        `envvar:"JWT"`
+	AccessTokenExpiration time.Duration `envvar:"ACCESS_TOKEN_EXPIRES"`
+	LogFile               string        `envvar:"LOG_FILE"`
 }
 
 // Cache is the cache configuration.
