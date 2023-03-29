@@ -8,9 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// CreateItemRequest is an entity for a POST request
-// to create a new item. Used for JSON validation
-// and binding.
+// CreateItemRequest is a request to create an item.
 type CreateItemRequest struct {
 	Name      string    `json:"name" binding:"required"`
 	Unit      string    `json:"unit" binding:"required"`
@@ -18,9 +16,7 @@ type CreateItemRequest struct {
 	ExpiresAt time.Time `json:"expires_at" binding:"required"`
 }
 
-// UpdateItemRequest is an entity for a PUT request
-// to update an existing item. Used for JSON validation
-// and binding.
+// UpdateItemRequest is a request to update an item.
 type UpdateItemRequest struct {
 	ID        uuid.UUID `json:"uuid" binding:"required"`
 	Name      string    `json:"name" binding:"required"`
