@@ -18,7 +18,7 @@ func jwtValidator(secret string) gin.HandlerFunc {
 		}
 
 		if err := auth.ValidateJWT(token, secret); err != nil {
-			c.JSON(401, gin.H{"error": "JWT token is invalid"})
+			c.JSON(401, gin.H{"error": "JWT token is invalid: " + err.Error()})
 			c.Abort()
 			return
 		}
