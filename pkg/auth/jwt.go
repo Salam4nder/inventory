@@ -10,9 +10,9 @@ import (
 
 // NewJWT creates a new JWT token and signs it with the given secret.
 // The signed token is returned as a string.
-func NewJWT(secret string) (string, error) {
+func NewJWT(secret string, expiry time.Duration) (string, error) {
 	expiration := &jwt.NumericDate{
-		Time: time.Now().Add(time.Minute * 40),
+		Time: time.Now().Add(expiry),
 	}
 	claims := jwt.RegisteredClaims{
 		ExpiresAt: expiration,
