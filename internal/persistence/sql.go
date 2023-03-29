@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"strconv"
 
@@ -56,6 +57,9 @@ func (s *SQLDatabase) Read(
 		&item.Unit,
 		&item.Amount,
 		&item.ExpiresAt); err != nil {
+		if err == sql.ErrNoRows {
+			return Item{}, ErrNotFound
+		}
 		return Item{}, err
 	}
 
@@ -84,7 +88,11 @@ func (s *SQLDatabase) ReadAll(
 			&item.Unit,
 			&item.Amount,
 			&item.ExpiresAt); err != nil {
-			return nil, err
+			if err == sql.ErrNoRows {
+				return []Item{}, ErrNotFound
+			}
+
+			return []Item{}, err
 		}
 
 		items = append(items, item)
@@ -124,6 +132,10 @@ func (s *SQLDatabase) ReadBy(
 			&item.Unit,
 			&item.Amount,
 			&item.ExpiresAt); err != nil {
+			if err == sql.ErrNoRows {
+				return []Item{}, ErrNotFound
+			}
+
 			return []Item{}, err
 		}
 		items = append(items, item)
@@ -155,6 +167,10 @@ func (s *SQLDatabase) Update(
 		item.Amount,
 		item.ExpiresAt,
 		item.ID); err != nil {
+		if err == sql.ErrNoRows {
+			return Item{}, ErrNotFound
+		}
+
 		return Item{}, err
 	}
 
@@ -180,6 +196,10 @@ func (s *SQLDatabase) Delete(
 		ctx,
 		query,
 		uuid); err != nil {
+		if err == sql.ErrNoRows {
+			return ErrNotFound
+		}
+
 		return err
 	}
 
