@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
 
@@ -31,8 +32,13 @@ func (s *Server) readItem(c *gin.Context) {
 
 	item, err := s.storage.Read(ctx, uuid)
 	if err != nil {
+		if errors.Is(err, persistence.ErrNotFound) {
+			c.JSON(http.StatusNotFound, err)
+			return
+		}
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
+
 		return
 	}
 
@@ -46,8 +52,13 @@ func (s *Server) readItems(c *gin.Context) {
 
 	items, err := s.storage.ReadAll(ctx)
 	if err != nil {
+		if errors.Is(err, persistence.ErrNotFound) {
+			c.JSON(http.StatusNotFound, err)
+			return
+		}
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
+
 		return
 	}
 
@@ -69,8 +80,13 @@ func (s *Server) readItemsBy(c *gin.Context) {
 
 	items, err := s.storage.ReadBy(ctx, filter)
 	if err != nil {
+		if errors.Is(err, persistence.ErrNotFound) {
+			c.JSON(http.StatusNotFound, err)
+			return
+		}
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
+
 		return
 	}
 
@@ -128,8 +144,13 @@ func (s *Server) updateItem(c *gin.Context) {
 	updatedItem, err := s.storage.Update(
 		ctx, item)
 	if err != nil {
+		if errors.Is(err, persistence.ErrNotFound) {
+			c.JSON(http.StatusNotFound, err)
+			return
+		}
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
+
 		return
 	}
 
@@ -156,8 +177,13 @@ func (s *Server) deleteItem(c *gin.Context) {
 	defer cancel()
 
 	if err := s.storage.Delete(ctx, uuid); err != nil {
+		if errors.Is(err, persistence.ErrNotFound) {
+			c.JSON(http.StatusNotFound, err)
+			return
+		}
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
+
 		return
 	}
 
@@ -213,7 +239,8 @@ func (s *Server) health(c *gin.Context) {
 // Temporary, will add auth to the endpoint that creates
 // a new JWT token.
 func (s *Server) newJWT(c *gin.Context) {
-	token, err := auth.NewJWT(s.config.JWTSecret)
+	token, err := auth.NewJWT(
+		s.config.JWTSecret, s.config.AccessTokenExpiration)
 	if err != nil {
 		s.logger.Error(err.Error(), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, err)
